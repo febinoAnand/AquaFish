@@ -8,4 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="BottomNavigation.ActiveItemTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BottonNavigationTheme" parent="Theme.AppCompat.Light">
+        <item name="android:textColorSecondary">@color/colorSecondary</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+
+
+
 </resources>

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AquaFish</string>
+    <string name="trader">Trader</string>
+    <string name="order">Order</string>
+    <string name="bill">Bill</string>
+    <string name="stock">Stock</string>
+    <string name="settings">Settings</string>
+
+    <string name="search">Search</string>
 </resources>
