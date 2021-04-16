@@ -30,8 +30,15 @@
         android:textSize="15sp" />
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
+
+    <ListView
+        android:id="@+id/trader_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp" />
     <ImageButton
         android:id="@+id/trader_add_button"
         android:layout_width="80dp"
@@ -43,12 +50,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:background="@drawable/add_toggle" />
-    <ListView
-        android:id="@+id/trader_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp" />
 
 </RelativeLayout>
 
