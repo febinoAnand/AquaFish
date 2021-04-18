@@ -7,4 +7,5 @@
         android:text="@string/stock"
         android:textSize="15sp"
         android:layout_centerInParent="true"/>
+
 </RelativeLayout>
