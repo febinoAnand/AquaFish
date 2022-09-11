@@ -14,10 +14,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
+
     }
 
     public ViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
+
     }
 
     @NonNull
@@ -40,4 +42,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         fragmentList.add(fragment);
         fragmentListTitles.add(string);
     }
+
+
 }

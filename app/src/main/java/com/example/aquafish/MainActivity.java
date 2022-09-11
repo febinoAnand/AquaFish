@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
+//        if (savedInstanceState == null) {
+//            getFragmentManager().beginTransaction().add(R.id.fragment_container, new TraderFragment(), "LIST").commit();
+//        }
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TraderFragment()).commit();
 
 
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_trader:
 //                        Toast.makeText(MainActivity.this, "Trader", Toast.LENGTH_SHORT).show();
                         selectedFragment = new TraderFragment();
+
                         break;
                     case R.id.action_order:
 //                        Toast.makeText(MainActivity.this, "Order", Toast.LENGTH_SHORT).show();

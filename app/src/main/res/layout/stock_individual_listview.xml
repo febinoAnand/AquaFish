@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/trader_list_bg"
+    android:paddingBottom="15dp"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/stock_individual_listview_breed_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Textview"
+        android:shadowColor="@color/colorShadow"
+        android:shadowDx="2"
+        android:shadowDy="5"
+        android:shadowRadius="10"
+        android:textColor="@color/white"
+        android:paddingLeft="35dp"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|right"
+        android:paddingRight="40dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/stock_individual_listview_total_box_txt"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="bottom"
+            android:shadowColor="@color/colorShadow"
+            android:shadowDx="2"
+            android:shadowDy="5"
+            android:shadowRadius="10"
+            android:layout_height="match_parent"
+            android:text="Textview"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/stock_individual_listview_total_kg_txt"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="top"
+            android:shadowColor="@color/colorShadow"
+            android:shadowDx="2"
+            android:shadowDy="5"
+            android:shadowRadius="10"
+            android:paddingTop="6dp"
+            android:textSize="10sp"
+            android:layout_height="match_parent"
+            android:text="Textview"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

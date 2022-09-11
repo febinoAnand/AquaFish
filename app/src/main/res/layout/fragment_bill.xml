@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bill"
-        android:textSize="15sp"
-        android:layout_centerInParent="true"/>
 
-</RelativeLayout>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="9"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bill_generate_tab_btn"
+                android:background="@drawable/order_tab_table_bg_selected"
+                android:text="@string/generate"
+                android:textColor="@color/white"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bill_list_tab_btn"
+                android:background="@drawable/order_tab_list_bg_unselected"
+                android:text="@string/list"
+                android:textColor="@color/colorPrimary"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/bill_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="5dp">
+    </androidx.viewpager.widget.ViewPager>
+
+</LinearLayout>

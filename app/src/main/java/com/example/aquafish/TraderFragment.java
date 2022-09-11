@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class TraderFragment extends Fragment {
         s.setSpan(new RelativeSizeSpan(0.8f), 0,s.length(), 0);
         s.setSpan(new TypefaceSpan(getContext(), "unicode.futurab.ttf"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         View view = layoutInflater.inflate(R.layout.fragment_trader, container, false);
+
 
         FragmentActivity fa = getActivity();
         fa.setTitle(s);

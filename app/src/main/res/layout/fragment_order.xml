@@ -9,57 +9,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
+        android:layout_weight="3.6"
+        android:orientation="horizontal"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_weight="3.55"
-        android:paddingBottom="15dp"
-        android:orientation="horizontal">
+        android:paddingRight="20dp">
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:background="@drawable/search_bg"
             android:layout_marginRight="10dp"
-            android:layout_weight=".2"/>
+            android:layout_weight=".2"
+            android:background="@drawable/search_bg"
+            android:gravity="center"
+            android:inputType="text" />
 
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/canlender_icon"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/canlender_icon" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3.8"
-        android:layout_marginTop="10dp"
+        android:layout_weight="3.9"
         android:gravity="center"
         android:orientation="horizontal">
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/order_tab_table_bg_selected"
-            android:text="Table"
-            android:layout_weight="1"
-            android:textColor="@color/white"/>
+            <Button
+                android:id="@+id/order_table_tab_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/order_tab_table_bg_selected"
+                android:text="@string/table"
+                android:textColor="@color/white" />
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/order_tab_list_bg_unselected"
-            android:text="List"
-            android:textColor="@color/colorPrimary"/>
+            <Button
+                android:id="@+id/order_list_tab_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/order_tab_list_bg_unselected"
+                android:text="@string/list"
+                android:textColor="@color/colorPrimary" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -67,6 +71,7 @@
         android:id="@+id/order_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_weight="1.4"
         android:paddingTop="5dp">
 
@@ -82,17 +87,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Share"
+            android:text="@string/share"
             android:paddingBottom="12dp"
             android:background="@drawable/ok_btn_bg"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Buyer"
+            android:text="@string/buyer"
             android:paddingBottom="12dp"
             android:background="@drawable/ok_btn_bg"/>
         <ImageButton
+            android:id="@+id/order_add_btn"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginRight="10dp"

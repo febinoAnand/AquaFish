@@ -17,11 +17,65 @@
     <string name="mobile">Mobile</string>
 
     <string name="enter_name_input">Enter name of Trader</string>
+    <string name="select_name_input">Select name of Trader</string>
     <string name="enter_alias_input">Enter alias of Trader</string>
     <string name="enter_location_input">Enter location of Trader</string>
     <string name="enter_mobile_input">Enter mobile no. of Trader</string>
 
     <string name="cancel_btn_text">Cancel</string>
     <string name="ok_btn_text">Ok</string>
+
+
+    <string name="add_item">Add Item</string>
+    <string name="item">Item</string>
+    <string name="rate">Rate</string>
+    <string name="total_kg">Total Kgs</string>
+    <string name="total_box">Total Box</string>
+    <string name="date">Date</string>
+    <string name="table">Table</string>
+    <string name="list">List</string>
+    <string name="box">Box</string>
+    <string name="kg">Kg</string>
+    <string name="amount">Amount</string>
+
+    <string name="zero">0</string>
+
+    <string name="share">Share</string>
+    <string name="buyer">Buyer</string>
+
+
+    <string name="total_order">Total Order</string>
+    <string name="select_item_input">Select Item</string>
+    <string name="enter_box">Enter no of Box</string>
+    <string name="enter_kgs">Enter no of Kgs</string>
+    <string name="enter_rate">Enter Rate</string>
+    <string name="enter_date">Pick Date</string>
+    <string name="enter_time">Pick time</string>
+    <string name="enter_description">Enter description</string>
+    <string name="enter_breed_name">Enter breed Name</string>
+    <string name="enter_short_name">Enter three letter name</string>
+    <string name="enter_bill_no">Enter Bill No.</string>
+
+
+
+    <string name="individual">Individual</string>
+    <string name="entry">Entry</string>
+    <string name="total_item">Total Item</string>
+    <string name="time">Time</string>
+    <string name="breed">Breed</string>
+    <string name="stock_entry">Stock Entry</string>
+    <string name="short_name">Short Name</string>
+    <string name="description">Description</string>
+
+    <string name="total_amount">Total Amount</string>
+    <string name="edit_order">Edit Order</string>
+    <string name="generate">Generate</string>
+    <string name="bill_no">Bill No</string>
+    <string name="bill_date">Bill Date</string>
+    <string name="bill_amount">Bill Amount</string>
+    <string name="balance">Balance</string>
+    <string name="old_balance">Old Balance</string>
+    <string name="total">Total</string>
+    <string name="total_bill">Total Bill</string>
 
 </resources>
