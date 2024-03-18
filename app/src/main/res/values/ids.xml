@@ -4,5 +4,8 @@
     <item name="relativeLayoutB" type="id" />
     <item name="relativeLayoutC" type="id" />
     <item name="relativeLayoutD" type="id" />
+    <item name="relativeLayoutE" type="id" />
+    <item name="relativeLayoutF" type="id" />
     <item name="tableLayoutB" type="id" />
+    <item name="tableLayoutF" type="id" />
 </resources>

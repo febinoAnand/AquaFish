@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-hdpi/cell_bacground.xml" value="0.1" />
         <entry key="app/src/main/res/layout/bill_generate_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/bill_list_fragment.xml" value="0.18697916666666667" />
+        <entry key="app/src/main/res/layout/dialog_bill_add_order_details.xml" value="0.18697916666666667" />
         <entry key="app/src/main/res/layout/dialog_order_details.xml" value="0.18697916666666667" />
         <entry key="app/src/main/res/layout/dialog_trader_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_bill.xml" value="0.18697916666666667" />
