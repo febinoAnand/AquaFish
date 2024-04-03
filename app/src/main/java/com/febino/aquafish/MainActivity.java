@@ -8,18 +8,26 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
 
+import com.febino.DatabaseManager.CopyCursor;
+import com.febino.DatabaseManager.DataBaseManager;
 import com.febino.aquafish.R;
+import com.febino.dataclass.TraderDetails;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static  final String TAG_NAME = "AquaFish";
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +37,13 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+//        CopyCursor cc = new CopyCursor();
+//        ArrayList<TraderDetails> traderDetailsArrayList = cc.copyTraderListFromCurser(c);
+
+
+//        new CopyCursor().copyTraderListFromCurser(dataBaseManager.getAllTraderFromTraderTable());
 
 
 //        if (savedInstanceState == null) {

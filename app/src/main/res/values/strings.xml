@@ -15,12 +15,15 @@
     <string name="alias">Alias</string>
     <string name="location">Location</string>
     <string name="mobile">Mobile</string>
+    <string name="traderid">Trader ID</string>
 
     <string name="enter_name_input">Enter name of Trader</string>
     <string name="select_name_input">Select name of Trader</string>
     <string name="enter_alias_input">Enter alias of Trader</string>
     <string name="enter_location_input">Enter location of Trader</string>
     <string name="enter_mobile_input">Enter mobile no. of Trader</string>
+    <string name="enter_traderid_input">Enter Trader ID</string>
+
 
     <string name="cancel_btn_text">Cancel</string>
     <string name="ok_btn_text">Ok</string>
@@ -78,4 +81,22 @@
     <string name="total">Total</string>
     <string name="total_bill">Total Bill</string>
 
+    <string name="warning">Warning</string>
+    <string name="delete_waring">Do you want to Delete Trader?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+<!--    Toast Dispaly-->
+
+    <string name="give_input_for_all_field">Give Inputs for All fields</string>
+    <string name="give_input_for_breedname_and_shortname_field">Give Inputs for BreedName and ShortName fields</string>
+    <string name="short_name_already_there">Short Name Already Exsist</string>
+    <string name="error_in_product_data">Something went Wrong. Product was not saved</string>
+    <string name="short_name_not_more_than_4">Short Name Should be four Char</string>
+
+
+    <string name="give_value_for_trader_id">Give input for Trader ID</string>
+    <string name="give_value_for_name">Give input for Trader Name</string>
+    <string name="trader_id_exist">Trader ID Already Exist</string>
+    <string name="error_in_trader_data">Something went Wrong. Trader was not saved</string>
 </resources>

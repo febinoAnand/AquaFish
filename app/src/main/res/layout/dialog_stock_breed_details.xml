@@ -46,9 +46,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:paddingTop="0dp"
                 android:textSize="12sp"
+                android:nextFocusDown="@+id/stock_short_name_edit"
                 android:layout_below="@+id/stock_entry_name_textview"
                 android:hint="@string/enter_breed_name"/>
         </RelativeLayout>
@@ -75,13 +76,15 @@
                     android:layout_alignParentTop="true"
                     android:text="@string/short_name"/>
                 <EditText
-                    android:id="@+id/stock_box_edit"
+                    android:id="@+id/stock_short_name_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="textCapCharacters"
                     android:paddingTop="0dp"
+                    android:maxLength="4"
                     android:textSize="12sp"
+                    android:nextFocusDown="@id/stock_entry_description_edit"
                     android:layout_below="@+id/stock_entry_short_name_textview"
                     android:hint="@string/enter_short_name"/>
             </RelativeLayout>
@@ -114,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:paddingTop="0dp"
                 android:textSize="12sp"
                 android:layout_below="@+id/stock_entry_description_textview"
@@ -132,7 +135,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/stock_dialog_ok_btn"
+                android:id="@+id/stock_dialog_cancel_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/cancel_btn_bg"
@@ -144,7 +147,7 @@
                 android:layout_weight="1"
                 android:text="@string/cancel_btn_text"/>
             <Button
-                android:id="@+id/stock_dialog_cancel_btn"
+                android:id="@+id/stock_dialog_ok_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_weight="1"

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.febino.aquafish.R;
+import com.febino.dataclass.StockDetails;
 
 import java.util.ArrayList;
 
@@ -41,6 +41,9 @@ public class StockEntryListViewAdapter extends BaseAdapter {
         if (view == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.listview_fragment_item, null);
+
+
+
         }
 
         return view;

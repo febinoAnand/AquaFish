@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.febino.aquafish.R;
+import com.febino.dataclass.StockDetails;
 
 import java.util.ArrayList;
 

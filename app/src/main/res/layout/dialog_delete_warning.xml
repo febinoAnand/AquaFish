@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/grey"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/order_header_textview"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="15dp"
+            android:text="@string/warning"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            >
+            <TextView
+                android:id="@+id/warning_delete_message_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:layout_alignParentTop="true"
+                android:text="@string/delete_waring"/>
+
+            <TextView
+                android:id="@+id/warning_delete_name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:layout_below="@+id/warning_delete_message_textview"
+                />
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/warning_dialog_no_btn"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/cancel_btn_bg"
+                android:textColor="@color/colorPrimary"
+                android:paddingBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="@string/no"/>
+            <Button
+                android:id="@+id/warning_dialog_yes_btn"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:textSize="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/ok_btn_bg"
+                android:textColor="@color/white"
+                android:paddingBottom="10dp"
+                android:text="@string/yes"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

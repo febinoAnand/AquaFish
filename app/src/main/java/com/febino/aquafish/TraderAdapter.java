@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.febino.aquafish.R;
+import com.febino.dataclass.TraderDetails;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class TraderAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return list.get(position)._id;
     }
 
     @Override
@@ -53,17 +54,24 @@ public class TraderAdapter extends BaseAdapter implements ListAdapter {
         TextView traderNameTxt = view.findViewById(R.id.trader_adapter_name);
         TextView traderAliasTxt = view.findViewById(R.id.trader_adapter_alias);
         TextView traderLocationTxt = view.findViewById(R.id.trader_adapter_location);
+        TextView traderTraderIDTxt = view.findViewById(R.id.trader_adapter_traderid);
 
         traderNameTxt.setTypeface(font);
         traderAliasTxt.setTypeface(font);
         traderLocationTxt.setTypeface(font);
+        traderTraderIDTxt.setTypeface(font);
 
-        traderNameTxt.setText(list.get(position).getName());
-        traderAliasTxt.setText(list.get(position).getAlias());
-        traderLocationTxt.setText(list.get(position).getLocation());
+        traderNameTxt.setText(list.get(position).name);
+        traderAliasTxt.setText(list.get(position).alias);
+        traderLocationTxt.setText(list.get(position).location);
+        traderTraderIDTxt.setText(list.get(position).trader_id);
 
 
 
         return view;
+    }
+    public void updateList(ArrayList<TraderDetails> newTraderArryaList){
+        list = newTraderArryaList;
+        notifyDataSetChanged();
     }
 }

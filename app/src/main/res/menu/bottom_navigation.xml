@@ -24,7 +24,7 @@
         android:enabled="true"
         android:icon="@drawable/stock_icon_unselected"
         android:title="@string/stock"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_setting"

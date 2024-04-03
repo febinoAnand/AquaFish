@@ -32,21 +32,65 @@
                 android:layout_weight="1"
                 />
 
-            <TextView
-                android:id="@+id/trader_adapter_alias"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:textColor="@color/white"
-                android:gravity="top"
-                android:shadowColor="@color/colorShadow"
-                android:shadowDx="2"
-                android:shadowDy="5"
-                android:shadowRadius="10"
-                android:paddingTop="6dp"
-                android:textSize="10sp"
                 android:layout_height="match_parent"
-                android:text="Textview"
                 android:layout_weight="1"
-                />
+                >
+                <TextView
+                    android:id="@+id/trader_adapter_alias"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    android:gravity="top"
+                    android:shadowColor="@color/colorShadow"
+                    android:shadowDx="2"
+                    android:shadowDy="5"
+                    android:shadowRadius="10"
+                    android:paddingTop="6dp"
+                    android:textSize="10sp"
+
+                    android:text="Textview"
+                    android:layout_weight="1"
+                    />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    android:gravity="top"
+                    android:shadowColor="@color/colorShadow"
+                    android:shadowDx="2"
+                    android:shadowDy="5"
+                    android:shadowRadius="10"
+                    android:paddingTop="6dp"
+                    android:paddingLeft="10dp"
+                    android:textSize="10sp"
+                    android:text="-"
+                    android:layout_weight="1"
+                    />
+
+
+                <TextView
+                    android:id="@+id/trader_adapter_traderid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    android:gravity="top"
+                    android:shadowColor="@color/colorShadow"
+                    android:shadowDx="2"
+                    android:shadowDy="5"
+                    android:shadowRadius="10"
+                    android:paddingTop="6dp"
+                    android:paddingLeft="10dp"
+                    android:textSize="10sp"
+                    android:text="Textview"
+                    android:layout_weight="1"
+                    />
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

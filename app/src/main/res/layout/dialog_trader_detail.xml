@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:nextFocusDown="@+id/trader_alias_edit"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:paddingTop="0dp"
                 android:textSize="12sp"
                 android:layout_below="@+id/trader_name_textview"
@@ -79,13 +79,79 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
-                    android:nextFocusDown="@+id/trader_location_edit"
-                    android:inputType="text"
+                    android:nextFocusDown="@+id/trader_id_edit"
+                    android:inputType="textCapSentences"
                     android:paddingTop="0dp"
                     android:textSize="12sp"
                     android:layout_below="@+id/trader_alias_textview"
                     android:hint="@string/enter_alias_input"/>
             </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/trader_id_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/traderid"/>
+                <EditText
+                    android:id="@+id/trader_id_edit"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapCharacters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="0dp"
+                    android:nextFocusDown="@id/trader_phone_edit"
+                    android:textSize="12sp"
+                    android:layout_below="@+id/trader_id_textview"
+                    android:hint="@string/enter_traderid_input"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/trader_phone_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:layout_alignParentTop="true"
+                android:text="@string/mobile"/>
+            <EditText
+                android:id="@+id/trader_phone_edit"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:textSize="12sp"
+                android:nextFocusDown="@id/trader_location_edit"
+                android:layout_below="@+id/trader_phone_textview"
+                android:hint="@string/enter_mobile_input"/>
+        </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,45 +169,18 @@
                 <EditText
                     android:id="@+id/trader_location_edit"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nextFocusDown="@+id/trader_phone_edit"
                     android:paddingTop="0dp"
                     android:textSize="12sp"
                     android:layout_below="@+id/trader_location_textview"
                     android:hint="@string/enter_location_input"/>
             </RelativeLayout>
 
-        </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:layout_weight="1">
-            <TextView
-                android:id="@+id/trader_phone_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:layout_alignParentTop="true"
-                android:text="@string/mobile"/>
-            <EditText
-                android:id="@+id/trader_phone_edit"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="0dp"
-                android:textSize="12sp"
-                android:layout_below="@+id/trader_phone_textview"
-                android:hint="@string/enter_mobile_input"/>
-        </RelativeLayout>
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -152,7 +191,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/trader_dialog_ok_btn"
+                android:id="@+id/trader_dialog_cancel_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/cancel_btn_bg"
@@ -164,7 +203,7 @@
                 android:layout_weight="1"
                 android:text="@string/cancel_btn_text"/>
             <Button
-                android:id="@+id/trader_dialog_cancel_btn"
+                android:id="@+id/trader_dialog_ok_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_weight="1"
