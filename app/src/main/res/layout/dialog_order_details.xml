@@ -49,6 +49,7 @@
                 android:nextFocusDown="@+id/order_item_edit"
                 android:paddingTop="0dp"
                 android:textSize="12sp"
+                android:focusable="false"
                 android:layout_below="@+id/order_name_textview"
                 android:hint="@string/select_name_input"/>
         </RelativeLayout>
@@ -77,6 +78,7 @@
                 android:inputType="text"
                 android:paddingTop="0dp"
                 android:textSize="12sp"
+                android:focusable="false"
                 android:layout_below="@+id/order_item_textview"
                 android:hint="@string/select_item_input"/>
         </RelativeLayout>
@@ -108,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
                     android:nextFocusDown="@+id/order_kgs_edit"
-                    android:inputType="text"
+                    android:inputType="number"
                     android:paddingTop="0dp"
                     android:textSize="12sp"
                     android:layout_below="@+id/order_box_textview"
@@ -131,7 +133,7 @@
                 <EditText
                     android:id="@+id/order_kgs_edit"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="0dp"
@@ -170,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
                     android:nextFocusDown="@+id/order_date_edit"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:paddingTop="0dp"
                     android:textSize="12sp"
                     android:layout_below="@+id/order_rate_textview"
@@ -193,7 +195,8 @@
                 <EditText
                     android:id="@+id/order_date_edit"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="date"
+                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="0dp"
@@ -215,7 +218,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/order_dialog_ok_btn"
+                android:id="@+id/order_dialog_cancel_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/cancel_btn_bg"
@@ -227,7 +230,7 @@
                 android:layout_weight="1"
                 android:text="@string/cancel_btn_text"/>
             <Button
-                android:id="@+id/order_dialog_cancel_btn"
+                android:id="@+id/order_dialog_ok_btn"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_weight="1"

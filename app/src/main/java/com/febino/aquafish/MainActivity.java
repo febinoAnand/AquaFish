@@ -11,10 +11,13 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 
 import com.febino.DatabaseManager.CopyCursor;
@@ -28,6 +31,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static  final String TAG_NAME = "AquaFish";
+    boolean doubleBackToExitPressedOnce = false;
+
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,26 @@ public class MainActivity extends AppCompatActivity {
 
 //        ActionBar actionBar = this.getSupportActionBar();
 //        actionBar.setDisplayHomeAsUpEnabled(true);            //For back button in titlebar
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, this.getString(R.string.once_again_back), Toast.LENGTH_SHORT).show();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+
     }
 
 

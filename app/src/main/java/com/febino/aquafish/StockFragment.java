@@ -64,8 +64,8 @@ public class StockFragment extends Fragment {
 
         final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPagerAdapter.addFragment(stockIndividualFragment,"Stock Individual Fragement");
-        viewPagerAdapter.addFragment(new StockTableFragment(),"Stock Table Fragement");
-        viewPagerAdapter.addFragment(new StockEntryFragment(),"Stock Entry Fragement");
+//        viewPagerAdapter.addFragment(new StockTableFragment(),"Stock Table Fragement");
+//        viewPagerAdapter.addFragment(new StockEntryFragment(),"Stock Entry Fragement");
 
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -131,7 +131,7 @@ public class StockFragment extends Fragment {
                                 return;
                             }
 
-                            if(shortNameString.length() > 4 || shortNameString.length() < 4){
+                            if(shortNameString.length() > 4 || shortNameString.length() < 3){
                                 Toast.makeText(getContext(), R.string.short_name_not_more_than_4, Toast.LENGTH_LONG).show();
                                 return;
                             }

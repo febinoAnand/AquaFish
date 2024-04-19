@@ -4,9 +4,11 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.febino.aquafish.MainActivity;
+import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.ProductDetails;
 import com.febino.dataclass.TraderDetails;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CopyCursor {
@@ -32,6 +34,99 @@ public class CopyCursor {
             }
         }
         return traderDetailsArrayList;
+    }
+
+    public OrderDetails copyOrderFromCursor(Cursor c){
+        OrderDetails orderDetails = new OrderDetails();
+        orderDetails.set_id(c.getLong(c.getColumnIndex(DataBaseManager.ORDER_ROW_ID)));
+        orderDetails.setTraderID(c.getLong(c.getColumnIndex(DataBaseManager.ORDER_TRADER_ID)));
+        orderDetails.setProductID(c.getLong(c.getColumnIndex(DataBaseManager.ORDER_PRODUCT_ID)));
+        orderDetails.setOrderDate(c.getString(c.getColumnIndex(DataBaseManager.ORDER_DATE)));
+        orderDetails.setTotalKG(c.getFloat(c.getColumnIndex(DataBaseManager.ORDER_KG)));
+        orderDetails.setRatePerKG(c.getFloat(c.getColumnIndex(DataBaseManager.ORDER_RATE)));
+        orderDetails.setTotalBox(c.getInt(c.getColumnIndex(DataBaseManager.ORDER_BOX)));
+        orderDetails.setCreateDateTime(c.getString(c.getColumnIndex(DataBaseManager.ORDER_CREATE_DATE_TIME)));
+        orderDetails.setUpdateDateTime(c.getString(c.getColumnIndex(DataBaseManager.ORDER_UPDATE_DATE_TIME)));
+        return orderDetails;
+    }
+
+    public ArrayList<OrderDetails> copyOrderListFromCursor(Cursor c){
+        ArrayList<OrderDetails> orderDetailsArrayList = new ArrayList<OrderDetails>();
+        if(c.getCount() > 0) {
+            while (c.moveToNext()) {
+                orderDetailsArrayList.add(copyOrderFromCursor(c));
+            }
+        }
+        return orderDetailsArrayList;
+    }
+
+    public ArrayList<ArrayList<OrderDetails>> copyArrayOfOrderListFromCursor(Cursor cursor, int traderCount, int productCount) {
+        ArrayList<ArrayList<OrderDetails>> orderDetailsArrayListArray = new ArrayList<ArrayList<OrderDetails>>(traderCount);
+//        Log.i("Order Count", ""+cursor.getCount());
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            OrderDetails orderDetails = copyOrderFromCursor(cursor);
+            long lastTraderID = orderDetails.getTraderID();
+            ArrayList<OrderDetails> orderDetailsArrayList = new ArrayList<OrderDetails>();
+            do{
+                orderDetails = copyOrderFromCursor(cursor);
+                if(lastTraderID != orderDetails.getTraderID()){
+                    orderDetailsArrayListArray.add(orderDetailsArrayList);
+                    orderDetailsArrayList = new ArrayList<OrderDetails>();
+                }
+                orderDetailsArrayList.add(orderDetails);
+                lastTraderID = orderDetails.getTraderID();
+            }while (cursor.moveToNext());
+            orderDetailsArrayListArray.add(orderDetailsArrayList);
+        }
+        return orderDetailsArrayListArray;
+    }
+
+    public ArrayList<ArrayList<OrderDetails>> copyArrayOfOrderListFromCursor(Cursor cursor, ArrayList<TraderDetails> traderDetailsArrayList, ArrayList<ProductDetails> productDetailsArrayList) {
+        ArrayList<ArrayList<OrderDetails>> orderDetailsArrayListArray = new ArrayList<ArrayList<OrderDetails>>();
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            OrderDetails orderDetails = copyOrderFromCursor(cursor);
+            for (int i = 0; i < traderDetailsArrayList.size(); i++) {
+                ArrayList<OrderDetails> orderDetailsArrayList = new ArrayList<OrderDetails>();
+                for (int j = 0; j < productDetailsArrayList.size(); j++) {
+
+//                    Log.i("Order Details Trader",orderDetails.getTraderID()+"");
+//                    Log.i("Order Details Product",orderDetails.getProductID()+"");
+//                    Log.i("Order Trader", traderDetailsArrayList.get(i)._id+"");
+//                    Log.i("Order Product", productDetailsArrayList.get(j)._id+"");
+
+                    if(traderDetailsArrayList.get(i)._id == orderDetails.getTraderID()){
+                        if(productDetailsArrayList.get(j)._id == orderDetails.getProductID()){
+//                            Log.i("Order Details-->",orderDetails.logString());
+                            orderDetailsArrayList.add(orderDetails);
+                            if(cursor.moveToNext()) orderDetails = copyOrderFromCursor(cursor);
+
+                        }else{
+                            OrderDetails tempOrderDetails= new OrderDetails();
+                            orderDetailsArrayList.add(tempOrderDetails);
+                        }
+                    }else{
+                        OrderDetails tempOrderDetails= new OrderDetails();
+                        orderDetailsArrayList.add(tempOrderDetails);
+                    }
+                }
+                orderDetailsArrayListArray.add(orderDetailsArrayList);
+            }
+
+        }else{
+            for (int i = 0; i < traderDetailsArrayList.size(); i++) {
+                ArrayList<OrderDetails> orderDetailsArrayList = new ArrayList<OrderDetails>();
+                for (int j = 0; j < productDetailsArrayList.size(); j++) {
+                    OrderDetails tempOrderDetails= new OrderDetails();
+                    orderDetailsArrayList.add(tempOrderDetails);
+                }
+                orderDetailsArrayListArray.add(orderDetailsArrayList);
+            }
+
+        }
+        return orderDetailsArrayListArray;
     }
 
 

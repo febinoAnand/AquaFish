@@ -11,16 +11,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.febino.DatabaseManager.CopyCursor;
+import com.febino.DatabaseManager.DataBaseManager;
 import com.febino.aquafish.R;
+import com.febino.dataclass.OrderDetails;
+import com.febino.dataclass.ProductDetails;
+import com.febino.dataclass.TraderDetails;
+import com.febino.validation.ValidateDetails;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class OrderTableFragment extends Fragment implements HorizontalScroll.ScrollViewListener, VerticalScroll.ScrollViewListener{
     private static int SCREEN_HEIGHT;
@@ -52,6 +66,8 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
     VerticalScroll scrollViewC;
     VerticalScroll scrollViewD;
 
+    View relativeView;
+
     /*
          This is for counting how many columns are added in the row.
     */
@@ -63,6 +79,25 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
     */
     int tableRowCountC= 0;
 
+    public DataBaseManager dataBaseManager;
+    public ArrayList<TraderDetails> traderDetailsArrayList;
+    public ArrayList<ProductDetails> productDetailsArrayList;
+
+
+    public ArrayList<ArrayList<OrderDetails>> orderDetailsArrayListArray;
+    public ArrayList<OrderDetails> totalOrderByProductArray;
+    CopyCursor copyCursor;
+
+    public ArrayList<OrderDetails> OrderListByName;
+
+    private String selectedDate;
+
+    private Fragment currentFragment;
+
+    public OrderTableFragment(String selectedDate){
+        this.selectedDate = selectedDate;
+        currentFragment = this;
+    }
 
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -71,11 +106,60 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View onCreateView(LayoutInflater layoutInflater1, ViewGroup viewGroup, Bundle bundle){
-        View view = layoutInflater1.inflate(R.layout.order_adapter_viewpager, viewGroup, false);
+
+        relativeView = layoutInflater1.inflate(R.layout.order_adapter_viewpager, viewGroup, false);
+
+
+
+        updateView(relativeView);
+
+        return relativeView;
+    }
+
+    public void updateSelectedDate(String selectedDate){
+        this.selectedDate = selectedDate;
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    private void updateView(View view){
+        relativeLayoutMain = null;
+        relativeLayoutMain = (RelativeLayout)view.findViewById(R.id.order_adapter_viewpager_layout);
+        if(tableRow != null) tableRow.removeAllViews();
+        tableRowCountC= 0;
+        tableColumnCountB = 0;
+        tableColumnCountF = 0;
 //        View view = layoutInflater1.inflate(R.layout.order_adapter_viewpager, new TableMainLayout(getContext()), true);
+        dataBaseManager = new DataBaseManager(getContext());
 
 
-        relativeLayoutMain= (RelativeLayout)view.findViewById(R.id.order_adapter_viewpager_layout);
+        copyCursor = new CopyCursor();
+        traderDetailsArrayList =  copyCursor.copyTraderListFromCurser(dataBaseManager.getAllTraderFromTraderTable());
+        productDetailsArrayList = copyCursor.copyProductListFromCurser(dataBaseManager.getAllProductFromProductTable());
+
+//        orderDetailsArrayListArray = copyCursor.copyArrayOfOrderListFromCursor(dataBaseManager.getOrderFromOrderTableWithDateAndOrderBy("2024-04-04"),traderDetailsArrayList.size(),productDetailsArrayList.size());
+        orderDetailsArrayListArray = copyCursor.copyArrayOfOrderListFromCursor(dataBaseManager.getOrderFromOrderTableWithDateAndOrderBy(selectedDate),traderDetailsArrayList,productDetailsArrayList);
+
+        totalOrderByProductArray = copyCursor.copyOrderListFromCursor(dataBaseManager.getOrderTotalByProduct(selectedDate));
+
+//        int count = 0;
+//        for(int i = 0;i<orderDetailsArrayListArray.size();i++){
+//            Log.i("order -","-----------------------------------");
+//            for(int j=0;j<orderDetailsArrayListArray.get(i).size();j++){
+//                OrderDetails orderDetails = orderDetailsArrayListArray.get(i).get(j);
+//                Log.i("order -","--------------"+ ++count);
+//                Log.i("order ID",""+orderDetails.get_id());
+//                Log.i("order TradeID",""+orderDetails.getTraderID());
+//                Log.i("order ProductID",""+orderDetails.getProductID());
+//                Log.i("order Kgs", "" + orderDetails.getTotalKG());
+//                Log.i("order box", "" + orderDetails.getTotalBox());
+//                Log.i("order Rate", "" + orderDetails.getRatePerKG());
+//                Log.i("order -","--------------");
+//            }
+//            Log.i("order -","-----------------------------------");
+//        }
+
+
+
         getScreenDimension();
         initializeRelativeLayout();
         initializeScrollers();
@@ -91,33 +175,71 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         /*
             Till Here.
          */
-
-
         /*  There is two unused functions
             Have a look on these functions and try to recreate and use it.
             createCompleteColumn();
             createCompleteRow();
         */
-        for(int i=0; i<10; i++){
-            addColumnsToTableB("Head" + i, i);
+
+        for(int i=0; i<productDetailsArrayList.size(); i++){
+            addColumnsToTableB(productDetailsArrayList.get(i).shortName, i);
         }
-        for(int i=0; i<25; i++){
+        if(productDetailsArrayList.size() < 5){
+            for(int i = productDetailsArrayList.size(); i < 5; i++){
+                addColumnsToTableB("",i);
+            }
+        }
+
+        for(int i=0; i<traderDetailsArrayList.size(); i++){
             initializeRowForTableD(i);
-            addRowToTableC("Row"+ i);
-            for(int j=0; j<tableColumnCountB; j++){
-                addColumnToTableAtD(i, "D "+ i + " " + j);
+            addRowToTableC(traderDetailsArrayList.get(i).name);
+            for(int j=0; j<productDetailsArrayList.size(); j++){
+                ProductDetails currentProduct = productDetailsArrayList.get(j);
+                TraderDetails currentTrader = traderDetailsArrayList.get(i);
+                OrderDetails orderDetails = orderDetailsArrayListArray.get(i).get(j);
+
+                if(orderDetails.getTotalKG() == 0 && orderDetails.getTotalBox() == 0)
+                    addColumnToTableAtD(i, "",true,currentTrader._id,currentProduct._id,null);
+                else
+                    addColumnToTableAtD(i, orderDetails.getTotalBox() + " Box \n"+ orderDetails.getTotalKG() +" Kgs",true,currentTrader._id,currentProduct._id,orderDetails);             //todo:give box and kg here
+            }
+
+            for(int j=productDetailsArrayList.size(); j<tableColumnCountB; j++){
+                addColumnToTableAtD(i, "",false, 0,0,null);
+            }
+        }
+        if(traderDetailsArrayList.size() < 9){
+            for(int i = traderDetailsArrayList.size(); i < 9; i++){
+                initializeRowForTableD(i);
+                addRowToTableC("");
+                for(int j=0; j<tableColumnCountB; j++){
+                    addColumnToTableAtD(i, "",false,0,0,null);
+//                    addColumnToTableAtD(i, "D "+ i + " " + j,false);
+                }
             }
         }
 
         addRowToTableE();
 
         initializeRowForTableF();
-        for(int i=0; i<10; i++){
-            addColumnsToTableF("Total" + i, i);
-        }
 
-        return view;
+        for(int i=0; i<totalOrderByProductArray.size(); i++){
+            OrderDetails totalOrders = totalOrderByProductArray.get(i);
+            String totalBoxAndKg = totalOrders.getTotalBox() +" Box \n"+ totalOrders.getTotalKG() + " Kg" ;
+            addColumnsToTableF(totalBoxAndKg, i);
+        }
+        if(totalOrderByProductArray.size() < 5){
+            for(int i = totalOrderByProductArray.size(); i < 5; i++){
+
+                addColumnsToTableF("",i);
+            }
+        }
+//        for(int i=0; i<10; i++){
+//            addColumnsToTableF("Total" + i, i);
+//        }
     }
+
+
 
 
     private void getScreenDimension(){
@@ -127,10 +249,8 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         display.getSize(size);
         SCREEN_WIDTH= size.x;
         SCREEN_HEIGHT = size.y;
-        Log.i("Screen_X", ""+size.x);
-        Log.i("Screen_Y", ""+size.y);
-
-
+//        Log.i("Screen_X", ""+size.x);
+//        Log.i("Screen_Y", ""+size.y);
     }
 
     private void initializeRelativeLayout(){
@@ -328,7 +448,7 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         TableRow.LayoutParams layoutParamsTableRow= new TableRow.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT/20);
         tableRow.setLayoutParams(layoutParamsTableRow);
         TextView label_date = new TextView(getContext());
-        label_date.setText("Item/ID");
+        label_date.setText("Name/Product");
         tableRow.setGravity(Gravity.CENTER);
 //        tableRow.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
         label_date.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
@@ -387,8 +507,11 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private synchronized void addColumnToTableAtD(final int rowPos, String text){
-        final String tempText = text;
+    private synchronized void addColumnToTableAtD(final int rowPos, String text,boolean isClickListenerSet, long traderID, long productID,OrderDetails currentOrderDetails){
+
+//        final long traderIDRow = traderID;
+//        final long productIDColumn = productID;
+
         TableRow tableRowAdd= (TableRow) this.tableLayoutD.getChildAt(rowPos);
         tableRow= new TableRow(getContext());
         TableRow.LayoutParams layoutParamsTableRow= new TableRow.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT/20);
@@ -398,15 +521,113 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         TextView label_date = new TextView(getContext());
         label_date.setText(text);
         label_date.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
+        label_date.setPadding(20,0,0,0);
         tableRow.setTag(label_date);
         this.tableRow.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
         this.tableRow.addView(label_date);
+
         tableRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),tempText,Toast.LENGTH_SHORT).show();
+
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = inflater.inflate(R.layout.dialog_order_details, null);
+
+                OrderDetails orderDetails = new OrderDetails();
+
+
+                EditText dialogOrderName = v.findViewById(R.id.order_name_edit);
+                EditText dialogOrderProduct = v.findViewById(R.id.order_item_edit);
+                EditText dialogOrderDate = v.findViewById(R.id.order_date_edit);
+                EditText dialogOrderBox = v.findViewById(R.id.order_box_edit);
+                EditText dialogOrderKgs = v.findViewById(R.id.order_kgs_edit);
+                EditText dialogOrderRate = v.findViewById(R.id.order_rate_edit);
+
+                Button okBtn = v.findViewById(R.id.order_dialog_ok_btn);
+                Button cancelBtn = v.findViewById(R.id.order_dialog_cancel_btn);
+
+
+                TraderDetails traderDetailsfinal = new CopyCursor().copyTraderFromCursor(dataBaseManager.getTraderInTraderTableByID(traderID));
+                ProductDetails productDetailsfinal = new CopyCursor().copyProductFromCursor(dataBaseManager.getProductFromProductTableByID(productID));
+
+                if (traderID != 0 || productID != 0) {
+                    dialogOrderName.setText(""+traderDetailsfinal.name);
+                    dialogOrderProduct.setText(""+productDetailsfinal.productName);
+                }
+
+                if(currentOrderDetails != null){
+                    dialogOrderBox.setText("" + currentOrderDetails.getTotalBox());
+                    dialogOrderKgs.setText(""+currentOrderDetails.getTotalKG());
+                    dialogOrderRate.setText(""+currentOrderDetails.getRatePerKG());
+                }
+
+                dialogOrderDate.setText(selectedDate);
+
+
+
+                okBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String orderBoxString = dialogOrderBox.getText().toString();
+                        String orderKGString = dialogOrderKgs.getText().toString();
+                        String orderRateString = dialogOrderRate.getText().toString();
+                        String errorMessage = ValidateDetails.ValidateOrderDetails(getContext(),orderBoxString, orderKGString, orderRateString);
+
+                        if (errorMessage != null) {
+                            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        if(currentOrderDetails !=null){
+                            currentOrderDetails.setTotalBox(Integer.parseInt(dialogOrderBox.getText().toString()));
+                            currentOrderDetails.setTotalKG(Float.parseFloat(dialogOrderKgs.getText().toString()));
+                            currentOrderDetails.setRatePerKG(Float.parseFloat(dialogOrderRate.getText().toString()));
+                            dataBaseManager.updateOrderInOrderTable(currentOrderDetails);
+                            Toast.makeText(getContext(),R.string.order_updated,Toast.LENGTH_LONG).show();
+                        }else{
+                            orderDetails.setOrderDate(dialogOrderDate.getText().toString());
+                            orderDetails.setProductID(productID);
+                            orderDetails.setTraderID(traderID);
+                            orderDetails.setTotalBox(Integer.parseInt(dialogOrderBox.getText().toString()));
+                            orderDetails.setTotalKG(Float.parseFloat(dialogOrderKgs.getText().toString()));
+                            orderDetails.setRatePerKG(Float.parseFloat(dialogOrderRate.getText().toString()));
+
+                            long savedID = dataBaseManager.addOrderInOrderTableReturnID(orderDetails);
+                            orderDetails.set_id(savedID);
+                            Toast.makeText(getContext(),R.string.order_saved,Toast.LENGTH_LONG).show();
+                        }
+
+
+
+//                        orderDetailsArrayListArray = copyCursor.copyArrayOfOrderListFromCursor(dataBaseManager.getOrderFromOrderTableWithDateAndOrderBy("2024-04-18"),traderDetailsArrayList,productDetailsArrayList);
+
+
+                        getFragmentManager().beginTransaction().detach(currentFragment).attach(currentFragment).commit();
+
+
+
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+
+                    }
+                });
+
+
+                bottomSheetDialog.setContentView(v);
+                bottomSheetDialog.show();
+//                Toast.makeText(getContext(),tempText,Toast.LENGTH_SHORT).show();
             }
         });
+
+        if(!isClickListenerSet) tableRow.setOnClickListener(null);
 
         tableRowAdd.addView(tableRow);
     }
@@ -453,7 +674,7 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         int i=0;
         int j=tableRowCountC-1;
         for(int k=i; k<=j; k++){
-            addColumnToTableAtD(k, value);
+//            addColumnToTableAtD(k, value);
         }
     }
 
@@ -464,7 +685,7 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
         int j=tableColumnCountB-1;
         int pos= tableRowCountC-1;
         for(int k=i; k<=j; k++){
-            addColumnToTableAtD(pos, value);
+//            addColumnToTableAtD(pos, value);
         }
     }
 }

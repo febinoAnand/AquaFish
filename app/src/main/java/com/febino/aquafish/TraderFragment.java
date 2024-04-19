@@ -77,8 +77,107 @@ public class TraderFragment extends Fragment {
 
         traderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                traderDetailsArrayList.get(position).logValues();
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                traderDetailsArrayList.get(position).logValues();
+                TraderDetails trader = traderDetailsArrayList.get(position);
+                String lastTraderID = "";
+
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = inflater.inflate(R.layout.dialog_trader_detail, null);
+
+                Typeface font = Typeface.createFromAsset(getContext().getAssets(), "fonts/unicode.futurab.ttf");
+                TextView dialogHeader = v.findViewById(R.id.trader_header_textview);
+                TextView traderNameTextView = v.findViewById(R.id.trader_name_textview);
+                TextView traderAliasTextView = v.findViewById(R.id.trader_alias_textview);
+                TextView traderLocationTextView = v.findViewById(R.id.trader_location_textview);
+                TextView traderMobileTextView = v.findViewById(R.id.trader_phone_textview);
+                TextView traderIDTextView = v.findViewById(R.id.trader_id_textview);
+
+                EditText traderNameEditText = v.findViewById(R.id.trader_name_edit);
+                EditText traderAliasEditText = v.findViewById(R.id.trader_alias_edit);
+                EditText traderLocationEditText = v.findViewById(R.id.trader_location_edit);
+                EditText traderMobileEditText = v.findViewById(R.id.trader_phone_edit);
+                EditText traderIDEditText = v.findViewById(R.id.trader_id_edit);
+
+                traderNameEditText.setText(trader.name);
+                traderAliasEditText.setText(trader.alias);
+                traderLocationEditText.setText(trader.location);
+                traderMobileEditText.setText(trader.mobile);
+                traderIDEditText.setText(trader.trader_id);
+
+                lastTraderID = trader.trader_id;
+                Button traderOKBtn = v.findViewById(R.id.trader_dialog_ok_btn);
+                Button traderCancelBtn = v.findViewById(R.id.trader_dialog_cancel_btn);
+
+                dialogHeader.setTypeface(font);
+                dialogHeader.setText(dialogHeader.getText().toString().toUpperCase());
+                traderOKBtn.setTypeface(font);
+                traderCancelBtn.setTypeface(font);
+
+                String finalLastTraderID = lastTraderID;
+                traderOKBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        TraderDetails trader = new TraderDetails();
+
+
+                        trader.trader_id = traderIDEditText.getText().toString();
+                        trader.name = traderNameEditText.getText().toString();
+                        trader.alias = traderAliasEditText.getText().toString();
+                        trader.location = traderLocationEditText.getText().toString();
+                        trader.mobile = traderMobileEditText.getText().toString();
+
+
+                        if(trader.name.equals(" ") || trader.name.equals("") || trader.name.equals(null)){
+                            Toast.makeText(getContext(),R.string.give_value_for_name,Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        else if(trader.trader_id.equals(" ") || trader.trader_id.equals("") || trader.trader_id.equals(null)){
+                            Toast.makeText(getContext(),R.string.give_value_for_trader_id,Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        else if(db.checkTraderIDExist(trader.trader_id) && !finalLastTraderID.equals(trader.trader_id)){
+                            Toast.makeText(getContext(),R.string.trader_id_exist,Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+//                        db.addTraderInTraderTable(trader);
+                        db.updateTraderInTraderTable(trader);
+                        traderAdapter.notifyDataSetChanged();
+                        bottomSheetDialog.dismiss();
+                        
+                    }
+
+
+                });
+
+                traderCancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
+
+                font = Typeface.createFromAsset(getContext().getAssets(), "fonts/futura medium bt.ttf");
+                traderNameTextView.setTypeface(font);
+                traderAliasTextView.setTypeface(font);
+                traderLocationTextView.setTypeface(font);
+                traderMobileTextView.setTypeface(font);
+                traderIDTextView.setTypeface(font);
+
+                traderNameEditText.setTypeface(font);
+                traderAliasEditText.setTypeface(font);
+                traderLocationEditText.setTypeface(font);
+                traderMobileEditText.setTypeface(font);
+                traderIDEditText.setTypeface(font);
+
+                bottomSheetDialog.setContentView(v);
+                bottomSheetDialog.show();
+
+//                Toast.makeText(getContext(), "Trader Name addition", Toast.LENGTH_SHORT).show();
             }
         });
         traderListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -106,6 +205,7 @@ public class TraderFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         db.deleteDetailsByID(traderDetails._id);
+                        db.deleteOrderByTraderID(traderDetails._id);
                         log("Trader Deleted...");
                         traderDetailsArrayList.remove(position);
                         traderAdapter.notifyDataSetChanged();
@@ -121,7 +221,7 @@ public class TraderFragment extends Fragment {
                         warningDialogButtom.dismiss();
                     }
                 });
-                return false;
+                return true;
             }
         });
         traderAddBtn.setOnClickListener(new View.OnClickListener() {
