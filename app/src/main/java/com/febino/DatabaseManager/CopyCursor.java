@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.febino.aquafish.MainActivity;
+import com.febino.dataclass.BillDetails;
 import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.ProductDetails;
 import com.febino.dataclass.TraderDetails;
@@ -47,7 +48,28 @@ public class CopyCursor {
         orderDetails.setTotalBox(c.getInt(c.getColumnIndex(DataBaseManager.ORDER_BOX)));
         orderDetails.setCreateDateTime(c.getString(c.getColumnIndex(DataBaseManager.ORDER_CREATE_DATE_TIME)));
         orderDetails.setUpdateDateTime(c.getString(c.getColumnIndex(DataBaseManager.ORDER_UPDATE_DATE_TIME)));
+
+//        update at version 2
+
+        int boolInt = c.getInt(c.getColumnIndex(DataBaseManager.ORDER_IS_BILLED));
+
+
+        orderDetails.setBilled(boolInt == 1 ? true : false);
+
+//        float kgPerBox = 35.0f;
+//        try{
+//            kgPerBox = c.getFloat(c.getColumnIndex(DataBaseManager.ORDER_KG_PER_BOX));
+//            if(kgPerBox==0.0f) kgPerBox = 35.0f;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        orderDetails.setKgPerBox(kgPerBox);
+
+        orderDetails.setKgPerBox(c.getFloat(c.getColumnIndex(DataBaseManager.ORDER_KG_PER_BOX)));
+        orderDetails.setBillID(c.getLong(c.getColumnIndex(DataBaseManager.ORDER_BILL_ID)));
+
         return orderDetails;
+
     }
 
     public ArrayList<OrderDetails> copyOrderListFromCursor(Cursor c){
@@ -58,6 +80,16 @@ public class CopyCursor {
             }
         }
         return orderDetailsArrayList;
+    }
+
+    public ArrayList<BillDetails> copyBillListFromCursor(Cursor c){
+        ArrayList<BillDetails> billDetailsArrayList = new ArrayList<BillDetails>();
+        if(c.getCount() > 0) {
+            while (c.moveToNext()) {
+                billDetailsArrayList.add(copyBillFromCursor(c));
+            }
+        }
+        return billDetailsArrayList;
     }
 
     public ArrayList<ArrayList<OrderDetails>> copyArrayOfOrderListFromCursor(Cursor cursor, int traderCount, int productCount) {
@@ -148,6 +180,22 @@ public class CopyCursor {
             }
         }
         return productDetailsArrayList;
+    }
+
+
+    public BillDetails copyBillFromCursor(Cursor c){
+        BillDetails billDetails = new BillDetails();
+        billDetails.set_id(c.getLong(c.getColumnIndex(DataBaseManager.BILL_ROW_ID)));
+        billDetails.setBillNo(c.getLong(c.getColumnIndex(DataBaseManager.BILL_NO)));
+        billDetails.setBillDate(c.getString(c.getColumnIndex(DataBaseManager.BILL_DATE)));
+        billDetails.setUuid(c.getString(c.getColumnIndex(DataBaseManager.BILL_UNIQUE_ID)));
+        billDetails.setTraderID(c.getLong(c.getColumnIndex(DataBaseManager.BILL_TRADER_ID)));
+        billDetails.setCreateDateTime(c.getString(c.getColumnIndex(DataBaseManager.BILL_CREATE_DATE_TIME)));
+        billDetails.setUpdateDateTime(c.getString(c.getColumnIndex(DataBaseManager.BILL_UPDATE_DATE_TIME)));
+        billDetails.setBalanceAmount(c.getFloat(c.getColumnIndex(DataBaseManager.BILL_BALANCE_AMOUNT)));
+        billDetails.setOldBalanceAmount(c.getFloat(c.getColumnIndex(DataBaseManager.BILL_OLD_BALANCE_AMOUNT)));
+        billDetails.setBillAmount(c.getFloat(c.getColumnIndex(DataBaseManager.BILL_AMOUNT)));
+        return billDetails;
     }
 
     public void showCursorData(Cursor c){

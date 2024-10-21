@@ -11,6 +11,13 @@ public class OrderDetails {
     private float totalKG;
     private float ratePerKG;
 
+    private float kgPerBox;
+    private boolean isBilled;
+    private long billID;
+
+    public boolean isSelected = false;
+
+
 
     public long get_id() {
         return _id;
@@ -81,6 +88,32 @@ public class OrderDetails {
     public void setRatePerKG(float ratePerKG) {
         this.ratePerKG = ratePerKG;
     }
+
+    public float getKgPerBox() {
+        return kgPerBox;
+    }
+
+    public void setKgPerBox(float kgPerBox) {
+        this.kgPerBox = kgPerBox;
+    }
+
+    public boolean isBilled() {
+        return isBilled;
+    }
+
+    public void setBilled(boolean billed) {
+        isBilled = billed;
+    }
+
+    public long getBillID() {
+        return billID;
+    }
+
+    public void setBillID(long billID) {
+        this.billID = billID;
+    }
+
+
 
     public String logString(){
         String orderDetails = "";

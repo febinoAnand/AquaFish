@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.febino.aquafish.R;
 
@@ -20,6 +21,9 @@ import androidx.viewpager.widget.ViewPager;
 
 public class BillFragment extends Fragment {
     private Button generateTabBtn,listTabBtn;
+
+    private BillListFragment billListFragment;
+
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -37,14 +41,19 @@ public class BillFragment extends Fragment {
         final ViewPager viewPager = view.findViewById(R.id.bill_view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
+        billListFragment = new BillListFragment();
+
         viewPagerAdapter.addFragment(new BillGenerateFragment(),"Bill Generate Fragment");
-        viewPagerAdapter.addFragment(new BillListFragment(),"Bill List Fragement");
+        viewPagerAdapter.addFragment(billListFragment,"Bill List Fragement");
         viewPager.setAdapter(viewPagerAdapter);
 
         generateTabBtn = view.findViewById(R.id.bill_generate_tab_btn);
         listTabBtn = view.findViewById(R.id.bill_list_tab_btn);
 
+
         //TODO: add typeface here
+
+
 
 
 
@@ -66,6 +75,7 @@ public class BillFragment extends Fragment {
             public void onClick(View v) {
                 viewPager.setCurrentItem(1, true);
                 selectListTab();
+                billListFragment.updateListFragment();
             }
         });
 

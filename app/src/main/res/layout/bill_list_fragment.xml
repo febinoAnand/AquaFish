@@ -14,19 +14,31 @@
 
         android:paddingBottom="15dp"
         android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/bill_list_calender_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_arrow_left_30"
+            android:background="@drawable/roundcorner"
+            android:layout_weight="1"/>
         <EditText
+            android:id="@+id/bill_list_date_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center"
             android:inputType="text"
             android:background="@drawable/search_bg"
+            android:focusable="false"
             android:layout_marginRight="10dp"
-            android:layout_weight=".2"/>
+            android:layout_marginLeft="10dp"
+            android:layout_weight=".3"/>
         <ImageButton
+            android:id="@+id/bill_list_calender_right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/canlender_icon"
+            android:src="@drawable/baseline_arrow_right_30"
+            android:background="@drawable/roundcorner"
             android:layout_weight="1"/>
     </LinearLayout>
     <LinearLayout
@@ -88,28 +100,31 @@
                 />
         </LinearLayout>
 
-    <TextView
-        android:id="@+id/order_list_date_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/zero"
-        android:textSize="12sp"
-        android:layout_gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:layout_marginTop="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:textSize="12sp"
             android:gravity="center"
             android:textColor="@color/white"
             android:text="@string/date"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="@string/bill_no"
             />
         <TextView
             android:layout_width="match_parent"
@@ -120,37 +135,29 @@
             android:textColor="@color/white"
             android:text="@string/name"
             />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:text="@string/box"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:text="@string/kg"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_weight="1.2"
             android:textSize="12sp"
             android:textColor="@color/white"
             android:text="@string/amount"
             />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1.4"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            />
+
     </LinearLayout>
     <ListView
-        android:id="@+id/order_list_tab_listview"
+        android:id="@+id/bill_list_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

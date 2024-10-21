@@ -17,7 +17,6 @@ public class SettingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-
     }
 
     @Override

@@ -530,6 +530,8 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
             @Override
             public void onClick(View v) {
 
+//                OrderDetails orderDetails = dataBaseManager
+
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.dialog_order_details, null);
@@ -573,6 +575,7 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
                         String orderBoxString = dialogOrderBox.getText().toString();
                         String orderKGString = dialogOrderKgs.getText().toString();
                         String orderRateString = dialogOrderRate.getText().toString();
+                        String orderKGPerBoxString = "35.0"; //TODO: add 35kg/box in the settings page
                         String errorMessage = ValidateDetails.ValidateOrderDetails(getContext(),orderBoxString, orderKGString, orderRateString);
 
                         if (errorMessage != null) {
@@ -581,18 +584,20 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
                         }
 
                         if(currentOrderDetails !=null){
-                            currentOrderDetails.setTotalBox(Integer.parseInt(dialogOrderBox.getText().toString()));
-                            currentOrderDetails.setTotalKG(Float.parseFloat(dialogOrderKgs.getText().toString()));
-                            currentOrderDetails.setRatePerKG(Float.parseFloat(dialogOrderRate.getText().toString()));
+                            currentOrderDetails.setTotalBox(Integer.parseInt(orderBoxString));
+                            currentOrderDetails.setTotalKG(Float.parseFloat(orderKGString));
+                            currentOrderDetails.setRatePerKG(Float.parseFloat(orderRateString));
+                            currentOrderDetails.setKgPerBox(Float.parseFloat(orderKGPerBoxString));
                             dataBaseManager.updateOrderInOrderTable(currentOrderDetails);
                             Toast.makeText(getContext(),R.string.order_updated,Toast.LENGTH_LONG).show();
                         }else{
                             orderDetails.setOrderDate(dialogOrderDate.getText().toString());
                             orderDetails.setProductID(productID);
                             orderDetails.setTraderID(traderID);
-                            orderDetails.setTotalBox(Integer.parseInt(dialogOrderBox.getText().toString()));
-                            orderDetails.setTotalKG(Float.parseFloat(dialogOrderKgs.getText().toString()));
-                            orderDetails.setRatePerKG(Float.parseFloat(dialogOrderRate.getText().toString()));
+                            orderDetails.setTotalBox(Integer.parseInt(orderBoxString));
+                            orderDetails.setTotalKG(Float.parseFloat(orderKGString));
+                            orderDetails.setRatePerKG(Float.parseFloat(orderRateString));
+                            orderDetails.setKgPerBox(Float.parseFloat(orderKGPerBoxString));
 
                             long savedID = dataBaseManager.addOrderInOrderTableReturnID(orderDetails);
                             orderDetails.set_id(savedID);

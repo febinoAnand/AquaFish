@@ -9,9 +9,14 @@ import android.os.Build;
 import android.util.Log;
 
 import com.febino.aquafish.MainActivity;
+import com.febino.dataclass.BillDetails;
 import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.ProductDetails;
 import com.febino.dataclass.TraderDetails;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
 import androidx.annotation.RequiresApi;
 
 
@@ -19,7 +24,7 @@ public class DataBaseManager {
     private SQLiteDatabase db;
     private static final String DB_NAME = "aqua_fish";
     private final String SUB_TAG_NAME = "Database";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
 //    public static final String BACKUP_FOLDER_PATH = MainActivity.APP_NAME+"/backup/";
 //    public static final String DATABASE_FILE = Environment.getDataDirectory()+"/data/com.modernscale.poultry/databases/" + DB_NAME;
 //    public static final String DATABASE_PATH = Environment.getDataDirectory()+"/data/com.modernscale.poultry/databases/";
@@ -50,6 +55,10 @@ public class DataBaseManager {
     public static final String ORDER_KG = "kg";
     public static final String ORDER_RATE = "rate";
     public static final String ORDER_DATE = "order_date";
+    public static final String ORDER_KG_PER_BOX = "kg_per_box";
+    public static final String ORDER_IS_BILLED = "is_billed";
+    public static final String ORDER_BILL_ID = "bill_id";
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -63,6 +72,38 @@ public class DataBaseManager {
     public static final String PRODUCT_ROW_CREATE_DATE = "create_date_time";
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////table name and row name for the trader registartion //////////////////////////
+    public static final String BILL_TABLE = "bill_table";
+    public static final String BILL_ROW_ID = "_id";
+    public static final String BILL_UNIQUE_ID = "bill_uuid";
+    public static final String BILL_NO = "bill_no";
+    public static final String BILL_DATE = "bill_date";
+    public static final String BILL_TRADER_ID = "trader_id";
+    public static final String BILL_CREATE_DATE_TIME = "bill_create_date";
+    public static final String BILL_UPDATE_DATE_TIME = "bill_update_date";
+    public static final String BILL_BALANCE_AMOUNT = "bill_balance_amount";
+    public static final String BILL_OLD_BALANCE_AMOUNT = "bill_old_balance_amount";
+    public static final String BILL_AMOUNT = "bill_amount";
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /////////////////table name and row name for the trader registartion //////////////////////////
+    public static final String SETTINGS_TABLE = "setting_table";
+    public static final String SETTINGS_ROW_ID = "_id";
+    public static final String SETTINGS_PRINTER_MAC = "printer_mac";
+    public static final String SETTINGS_KG_PER_BOX = "kg_per_box";
+
+    //    public static final String SETTINGS_PASSWORD = "password";
+
+//    appinfo
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -96,17 +137,33 @@ public class DataBaseManager {
              createTraderTable(db);
              createProductTable(db);
              createOrderTable(db);
+
+//             at version 2 update
+             createBillTable(db);
+             updateOrderTable(db);
+             addBillAmountColumnInBillTable(db);
         }
 
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+             if(oldVersion < 2){
+                 createBillTable(db);
+                 updateOrderTable(db);
+             }
+
+            if (oldVersion < 3) {
+                addBillAmountColumnInBillTable(db);
+            }
 
 
         }
 
     }
+
+
+
 
     private void createOrderTable(SQLiteDatabase db) {
         String createTraderTableQueryString;
@@ -135,6 +192,26 @@ public class DataBaseManager {
         log("Created Order Table");
     }
 
+    public void updateOrderTable(SQLiteDatabase db) {
+        String updateQuery = "Alter table " + ORDER_TABLE + " Add COLUMN "
+                + ORDER_IS_BILLED
+                + " integer default 0"
+                + ";";
+        db.execSQL(updateQuery);
+
+        updateQuery = "Alter table " + ORDER_TABLE + " Add COLUMN "
+                + ORDER_KG_PER_BOX
+                + " real default 35.0"
+                + ";";
+        db.execSQL(updateQuery);
+
+        updateQuery = "Alter table " + ORDER_TABLE + " Add COLUMN "
+                + ORDER_BILL_ID
+                + " integer default 0"
+                + ";";
+        db.execSQL(updateQuery);
+    }
+
     public long addOrderInOrderTableReturnID(OrderDetails orderDetails) {
         ContentValues orderDetailsValues = new ContentValues();
         orderDetailsValues.put(ORDER_TRADER_ID,orderDetails.getTraderID());
@@ -143,6 +220,9 @@ public class DataBaseManager {
         orderDetailsValues.put(ORDER_KG, orderDetails.getTotalKG());
         orderDetailsValues.put(ORDER_RATE, orderDetails.getRatePerKG());
         orderDetailsValues.put(ORDER_BOX, orderDetails.getTotalBox());
+        orderDetailsValues.put(ORDER_KG_PER_BOX, orderDetails.getKgPerBox());
+        orderDetailsValues.put(ORDER_BILL_ID, orderDetails.getBillID());
+        orderDetailsValues.put(ORDER_IS_BILLED,orderDetails.isBilled());
 
         long lastID = db.insert(ORDER_TABLE, null, orderDetailsValues);
         return lastID;
@@ -158,6 +238,9 @@ public class DataBaseManager {
                 ORDER_UPDATE_DATE_TIME + " = dateTime('now'), " +
                 ORDER_KG + " = " + orderDetails.getTotalKG() + ", " +
                 ORDER_RATE + " = " + orderDetails.getRatePerKG() + ", " +
+                ORDER_KG_PER_BOX + " = " + orderDetails.getKgPerBox() + ", " +
+                ORDER_BILL_ID + " = " + orderDetails.getBillID() + ", " +
+                ORDER_IS_BILLED + " = " + (orderDetails.isBilled() ? 1 : 0) + ", " +
                 ORDER_BOX + " = " + orderDetails.getTotalBox() +
                 " WHERE " + ORDER_ROW_ID + " = " + orderDetails.get_id();
 
@@ -168,7 +251,7 @@ public class DataBaseManager {
 
 
     public Cursor getOrderTotalByProduct(String selectedDate){
-        String queryString = "SELECT "+ORDER_ROW_ID+","+ORDER_TRADER_ID+","+ORDER_PRODUCT_ID+","+ORDER_CREATE_DATE_TIME+","+ORDER_UPDATE_DATE_TIME+", "+ORDER_DATE+", sum("+ORDER_BOX+") as "+ORDER_BOX+",sum("+ORDER_KG+") as "+ORDER_KG+", "+ORDER_RATE+" FROM "+ORDER_TABLE+" WHERE "+ORDER_DATE+" = '"+selectedDate+"'  GROUP BY "+ORDER_PRODUCT_ID+" order by "+ORDER_PRODUCT_ID+" ASC";
+        String queryString = "SELECT "+ORDER_ROW_ID+","+ORDER_TRADER_ID+","+ORDER_PRODUCT_ID+","+ORDER_CREATE_DATE_TIME+","+ORDER_UPDATE_DATE_TIME+", "+ORDER_DATE+", sum("+ORDER_BOX+") as "+ORDER_BOX+",sum("+ORDER_KG+") as "+ORDER_KG+", "+ORDER_RATE+", "+ORDER_IS_BILLED+", "+ORDER_KG_PER_BOX+", "+ORDER_BILL_ID+" FROM "+ORDER_TABLE+" WHERE "+ORDER_DATE+" = '"+selectedDate+"'  GROUP BY "+ORDER_PRODUCT_ID+" order by "+ORDER_PRODUCT_ID+" ASC";
         Cursor c = db.rawQuery(queryString, null);
         return c;
     }
@@ -179,11 +262,31 @@ public class DataBaseManager {
         return c;
     }
 
+    public Cursor getOrderFromOrderTableByTraderID(long traderID){
+        String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_TRADER_ID +" = '"+traderID+"' AND "+ORDER_IS_BILLED+" = 0 ORDER BY " + ORDER_DATE + " ASC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
+    public Cursor getOrderFromOrderTableByBillID(long billID){
+        String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_BILL_ID +" = '"+billID+"' AND "+ORDER_IS_BILLED+" = 1 ORDER BY " + ORDER_DATE + " ASC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
     public Cursor getOrderFromOrderTableWithDateAndOrderBy(String date){
         String getOrderQuery = "SELECT * FROM " + ORDER_TABLE + " WHERE "+ ORDER_DATE + " = '"+ date+"' ORDER BY "+ ORDER_TRADER_ID + " , "+ ORDER_PRODUCT_ID;
         Cursor c = db.rawQuery(getOrderQuery,null);
 //        c.moveToFirst();
         return c;
+    }
+
+    public void changeBillIDForOrderDetailsToZero(long billID){
+        String queryString = "UPDATE " + ORDER_TABLE + " SET " +
+                ORDER_BILL_ID + " = 0 ,"+
+                ORDER_IS_BILLED + " = 0 "
+                +"WHERE " + ORDER_BILL_ID + " = " + billID;
+        db.execSQL(queryString);
     }
 
     public void deleteOrderByID(long id){
@@ -373,6 +476,98 @@ public class DataBaseManager {
             return true;
         return false;
     }
+
+
+    private void createBillTable(SQLiteDatabase db) {
+        String createTraderTableQueryString;
+        createTraderTableQueryString = "create table " + BILL_TABLE + " ("
+                + BILL_ROW_ID
+                + " integer primary key autoincrement not null, "
+                + BILL_UNIQUE_ID
+                + " text not null unique,"
+                + BILL_NO
+                + " integer not null unique,"
+                + BILL_DATE
+                + " DATETIME,"
+                + BILL_TRADER_ID
+                + " integer not null,"
+                + BILL_CREATE_DATE_TIME
+                + " DATETIME DEFAULT (datetime('now','localtime')) not null,"
+                + BILL_UPDATE_DATE_TIME
+                + " DATETIME,"
+                + BILL_BALANCE_AMOUNT
+                + " real default 0,"
+                + BILL_OLD_BALANCE_AMOUNT
+                + " real default 0"
+                + ");";
+
+        db.execSQL(createTraderTableQueryString);
+        log("Created Order Table");
+    }
+
+    public void addBillAmountColumnInBillTable(SQLiteDatabase db){
+        String query = "ALTER TABLE " + BILL_TABLE + " ADD COLUMN " + BILL_AMOUNT + " real DEFAULT 0;";
+        db.execSQL(query);
+    }
+
+    public long addBillInBillTableReturnID(BillDetails billDetails, ArrayList<OrderDetails> orderDetailsArrayList) {
+        UUID uuid = UUID.randomUUID();
+        String uuidString= uuid.toString().replace("-","");
+
+        ContentValues billDetailsValue = new ContentValues();
+        billDetailsValue.put(BILL_NO, billDetails.getBillNo());
+        billDetailsValue.put(BILL_DATE, billDetails.getBillDate());
+        billDetailsValue.put(BILL_TRADER_ID, billDetails.getTraderID());
+        billDetailsValue.put(BILL_BALANCE_AMOUNT, billDetails.getBalanceAmount());
+        billDetailsValue.put(BILL_OLD_BALANCE_AMOUNT, billDetails.getOldBalanceAmount());
+        billDetailsValue.put(BILL_AMOUNT, billDetails.getBillAmount());
+        billDetailsValue.put(BILL_UNIQUE_ID, uuidString);
+
+        long lastID = db.insert(BILL_TABLE, null, billDetailsValue);
+
+        for (int i = 0; i < orderDetailsArrayList.size(); i++) {
+            OrderDetails orderDetails = orderDetailsArrayList.get(i);
+            orderDetails.setBillID(lastID);
+            orderDetails.setBilled(true);
+            updateOrderInOrderTable(orderDetails);
+        }
+
+        return lastID;
+    }
+
+    public Cursor getBillFromBillTableByDate(String date){
+        String queryString = "SELECT * FROM "+ BILL_TABLE + " WHERE "+ BILL_DATE +" = '"+date+"' ORDER BY " + BILL_NO + " ASC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
+    public Cursor getBillFromBillTableByID(long id){
+        String queryString = "SELECT * FROM "+ BILL_TABLE + " WHERE " + BILL_ROW_ID + " = " + id + " LIMIT 1";
+        Cursor c = db.rawQuery(queryString,null);
+        c.moveToFirst();
+        return c;
+    }
+
+    public void deleteBillDetailsByID(long id){
+        String deleteTraderByID = "DELETE FROM " + BILL_TABLE + " WHERE " + BILL_ROW_ID + " = " + id;
+        db.execSQL(deleteTraderByID);
+        changeBillIDForOrderDetailsToZero(id);
+    }
+
+    public long getLastBillNoFromBillTable(){
+        String query = "SELECT "+ BILL_NO + " FROM " + BILL_TABLE + " ORDER BY "+ BILL_ROW_ID + " DESC LIMIT 1";
+        Cursor c = db.rawQuery(query,null);
+        long billNo = 0;
+        try {
+            c.moveToFirst();
+            billNo = c.getLong(c.getColumnIndex(BILL_NO));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return billNo;
+    }
+
 
     private void log(String message) {
         Log.i(MainActivity.TAG_NAME+"-"+this.SUB_TAG_NAME,message);

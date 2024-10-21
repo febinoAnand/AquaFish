@@ -9,7 +9,7 @@
 
     <string name="search">Search</string>
 
-<!--    trader add Dialog strings-->
+    <!--    trader add Dialog strings-->
     <string name="trader_detials">Trader Details</string>
 
     <string name="name">Name</string>
@@ -43,6 +43,7 @@
     <string name="amount">Amount</string>
 
     <string name="zero">0</string>
+    <string name="zerodot">0.0</string>
 
     <string name="share">Share</string>
     <string name="buyer">Buyer</string>
@@ -59,7 +60,6 @@
     <string name="enter_breed_name">Enter breed Name</string>
     <string name="enter_short_name">Enter three letter name</string>
     <string name="enter_bill_no">Enter Bill No.</string>
-
 
 
     <string name="individual">Individual</string>
@@ -87,7 +87,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
-<!--    Toast Dispaly-->
+    <!--    Toast Dispaly-->
 
     <string name="give_input_for_all_field">Give Inputs for All fields</string>
     <string name="give_input_for_breedname_and_shortname_field">Give Inputs for BreedName and ShortName fields</string>
@@ -100,7 +100,7 @@
     <string name="give_value_for_name">Give input for Trader Name</string>
     <string name="trader_id_exist">Trader ID Already Exist</string>
     <string name="error_in_trader_data">Something went Wrong. Trader was not saved</string>
-    
+
     <string name="give_input_box">Give Input to Box</string>
     <string name="give_input_kg">Give Input to KG</string>
     <string name="give_input_rate">Give Input to Rate</string>
@@ -109,5 +109,13 @@
 
     <string name="order_saved">Order Saved</string>
     <string name="order_updated">Order Updated</string>
+
+    <string name="add_order">Add Order</string>
+    <string name="add_trader">Add Trader</string>
+
+    <string name="print">Print</string>
+    <string name="back">Back</string>
+    <string name="view">View</string>
+<!--    <string name="share">Share</string>-->
 
 </resources>
