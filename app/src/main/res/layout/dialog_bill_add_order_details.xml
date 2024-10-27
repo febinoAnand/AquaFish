@@ -34,7 +34,80 @@
             android:paddingRight="10dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">.
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/from_date"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/to_date"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/bill_add_order_calender_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_arrow_left_30"
+                    android:background="@drawable/roundcorner"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_weight="1.1"/>
+
+                <EditText
+                    android:id="@+id/bill_add_order_calender_from_date_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_bg"
+                    android:focusable="false"
+                    android:layout_weight="1"
+                    android:hint="@string/from_date"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    />
+                <ImageButton
+                    android:id="@+id/bill_add_order_calender_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:src="@drawable/baseline_arrow_right_30"
+                    android:background="@drawable/roundcorner"
+                    android:layout_gravity="center"
+                    android:layout_weight="1.1"/>
+
+
+                <EditText
+                    android:id="@+id/bill_add_order_calender_to_date_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/search_bg"
+                    android:hint="@string/to_date"
+                    android:paddingBottom="10dp"
+                    android:textSize="14dp"
+                    android:gravity="center"
+                    android:focusable="false"
+                    android:layout_weight="1"
+                    />
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,6 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:layout_weight=".95"
                     android:text="@string/date"/>
 
@@ -51,6 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="@string/breed"/>
 
@@ -58,6 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:layout_weight="1.1"
                     android:text="@string/box"/>
 
@@ -65,6 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
+                    android:layout_gravity="center"
                     android:layout_weight="1.1"
                     android:text="@string/kg"/>
 
@@ -72,15 +149,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
+                    android:layout_gravity="center"
                     android:layout_weight="1.05"
                     android:text="@string/rate"/>
 
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    />
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/bill_add_order_select_all_imageview"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:visibility="invisible"
+                        android:src="@drawable/baseline_check_box_outline_blank_30"
+
+                        />
+
+                </RelativeLayout>
+
 
 
 

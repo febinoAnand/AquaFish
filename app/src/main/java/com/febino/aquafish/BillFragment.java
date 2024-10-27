@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.febino.aquafish.R;
 
@@ -23,12 +24,16 @@ public class BillFragment extends Fragment {
     private Button generateTabBtn,listTabBtn;
 
     private BillListFragment billListFragment;
+    private BillGenerateFragment billGenerateFragment;
+
+    ViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstance) {
@@ -38,12 +43,13 @@ public class BillFragment extends Fragment {
         View view = layoutInflater.inflate(R.layout.fragment_bill, container, false);
         getActivity().setTitle(s);
 
-        final ViewPager viewPager = view.findViewById(R.id.bill_view_pager);
+        viewPager = view.findViewById(R.id.bill_view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
+        billGenerateFragment = new BillGenerateFragment();
         billListFragment = new BillListFragment();
 
-        viewPagerAdapter.addFragment(new BillGenerateFragment(),"Bill Generate Fragment");
+        viewPagerAdapter.addFragment(billGenerateFragment,"Bill Generate Fragment");
         viewPagerAdapter.addFragment(billListFragment,"Bill List Fragement");
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -109,6 +115,13 @@ public class BillFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void changeBillFragmentView(){
+        if (viewPager != null) {
+            viewPager.setCurrentItem(0, true);
+            selectGenerateTab();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)

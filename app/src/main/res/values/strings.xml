@@ -79,6 +79,7 @@
     <string name="bill_amount">Bill Amount</string>
     <string name="balance">Balance</string>
     <string name="old_balance">Old Balance</string>
+    <string name="bill_balance">Bill + Balance</string>
     <string name="total">Total</string>
     <string name="total_bill">Total Bill</string>
 
@@ -104,6 +105,8 @@
     <string name="give_input_box">Give Input to Box</string>
     <string name="give_input_kg">Give Input to KG</string>
     <string name="give_input_rate">Give Input to Rate</string>
+    <string name="zero_not_accept">Zero will not accept for all the Input</string>
+    <string name="not_valid_input">Input given is not Valid</string>
 
     <string name="once_again_back">Please click BACK again to exit</string>
 
@@ -116,6 +119,17 @@
     <string name="print">Print</string>
     <string name="back">Back</string>
     <string name="view">View</string>
+
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+
+    <string name="select_date">Select Date</string>
 <!--    <string name="share">Share</string>-->
+
+    <string name="spf_tank">S.P.F. டேங்க் மீன், ஈரோடு</string>
+    <string name="sale_items">லோகு, கட்லா, ௫பா, பங்காஸ், ஜிலேபி, அனைத்து வகை மீன் வியாபாரம்</string>
+    <string name="phone_number">Ph: 9952483992</string>
+
+    <string name="order_added_to_bill">Bill generated to this Order. Bill_No_</string>
 
 </resources>

@@ -2,37 +2,56 @@ package com.febino.aquafish;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.fragment.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.febino.DatabaseManager.CopyCursor;
 import com.febino.DatabaseManager.DataBaseManager;
 import com.febino.dataclass.BillDetails;
 import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.TraderDetails;
+import com.febino.dependencies.BillGenerator;
 import com.febino.dependencies.PdfGenerator;
+import com.febino.dependencies.PdfGeneratorIText7;
+import com.febino.dependencies.ProjectUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class BillViewActivity extends AppCompatActivity {
 
-    Button printBtn, shareBtn, viewBtn;
+    Button printBtn, shareBtn, backBtn;
 
     public static final String BILL_ID_EXTRAS = "bill_id_string";
 
-    float billAmount, balanceAmount, oldBalanceAmount;
+    float billAmount, balanceAmount, oldBalanceAmount, billBalanceAmount;
 
-    TextView billAmountText, balanceAmountText, oldBalanceAmountTxt, totalAmountText;
+    TextView billAmountText, balanceAmountText, oldBalanceAmountTxt, totalAmountText, billBalanceText;
     TextView traderNameText, traderIDText;
     ListView billViewOrderListView;
-    EditText billNoEdit, billDateEdit;
+//    EditText billNoEdit, billDateEdit;
+    TextView billNoText, billDateText;
     DataBaseManager db;
     CopyCursor cc;
     BillDetails billDetails;
@@ -42,87 +61,195 @@ public class BillViewActivity extends AppCompatActivity {
     ArrayList<OrderDetails> orderDetailsArrayList;
 
 
+    ImageButton backImageBtn, printImageBtn, shareImageBtn, editImageBtn;
+
+    private View billViewActivity;
+    private LinearLayout billViewLayout;
+
     long billID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try
+        {
+            this.getSupportActionBar().hide();
+        }
+        catch (NullPointerException e){}
         setContentView(R.layout.activity_bill_view);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+        billViewActivity = findViewById(R.id.bill_view_layout);
+//        billViewActivity = getWindow().getDecorView().findViewById(android.R.id.content);
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             billID = extras.getLong(BILL_ID_EXTRAS, 0);
-            Log.i("bill ID", ""+billID);
+//            Log.i("bill ID", ""+billID);
 //            return;
         }
 
         db = new DataBaseManager(BillViewActivity.this);
         cc = new CopyCursor();
-        decimalFormat = new DecimalFormat("#.0");
+        decimalFormat = new DecimalFormat("0.0");
+
+
 
         billDetails = cc.copyBillFromCursor(db.getBillFromBillTableByID(billID));
         orderDetailsArrayList = cc.copyOrderListFromCursor(db.getOrderFromOrderTableByBillID(billID));
         traderDetails = cc.copyTraderFromCursor(db.getTraderInTraderTableByID(billDetails.getTraderID()));
 
-        Log.i("Bill Id", "" + billID);
+//        Log.i("Bill Id", "" + billID);
 
         printBtn = findViewById(R.id.bill_view_print_btn);
         shareBtn = findViewById(R.id.bill_view_share_btn);
-        viewBtn = findViewById(R.id.bill_view_view_btn);
+        backBtn = findViewById(R.id.bill_view_back_btn);
+
+        backImageBtn = findViewById(R.id.bill_view_back_img_btn);
+        printImageBtn = findViewById(R.id.bill_view_print_img_btn);
+        shareImageBtn = findViewById(R.id.bill_view_share_img_btn);
+        editImageBtn = findViewById(R.id.bill_view_edit_img_btn);
+
 
         traderNameText = findViewById(R.id.bill_view_name_textview);
         traderIDText = findViewById(R.id.bill_view_trader_id_textview);
 
         billAmountText = findViewById(R.id.bill_view_bill_amount_text);
         balanceAmountText = findViewById(R.id.bill_view_balance_text);
+        billBalanceText = findViewById(R.id.bill_view_bill_balance_text);
         oldBalanceAmountTxt = findViewById(R.id.bill_view_old_balance_text);
         totalAmountText = findViewById(R.id.bill_view_total_amount_text);
 
         billViewOrderListView = findViewById(R.id.bill_view_listview);
 
-        billNoEdit = findViewById(R.id.bill_view_billno_edit);
-        billDateEdit = findViewById(R.id.bill_view_date_edit);
+        billNoText = findViewById(R.id.bill_view_billno_text);
+        billDateText = findViewById(R.id.bill_view_date_text);
+
+//        billNoEdit = findViewById(R.id.bill_view_billno_edit);
+//        billDateEdit = findViewById(R.id.bill_view_date_edit);
+
 
 
         traderNameText.setText(traderDetails.name);
         traderIDText.setText(traderDetails.trader_id);
-        billNoEdit.setText(billDetails.getBillNo()+"");
-        billDateEdit.setText(billDetails.getBillDate());
+
+//        billNoEdit.setText(billDetails.getBillNo()+"");
+//        billDateEdit.setText(convertDateFormat(billDetails.getBillDate()));
+
+        billNoText.setText(billDetails.getBillNo()+"");
+        billDateText.setText(ProjectUtils.convertDateFormatToNormal(billDetails.getBillDate()));
+
 
         billAmount = billDetails.getBillAmount();
         balanceAmount = billDetails.getBalanceAmount();
+        billBalanceAmount = billAmount + balanceAmount;
         oldBalanceAmount = billDetails.getOldBalanceAmount();
 
         billAmountText.setText(billAmount+"");
         balanceAmountText.setText(balanceAmount+"");
         oldBalanceAmountTxt.setText(oldBalanceAmount+"");
+        billBalanceText.setText(billBalanceAmount+"");
 
         totalAmountText.setText(""+(billAmount+balanceAmount+oldBalanceAmount));
 
 
-        BillGenerateOrderAdapter billGenerateOrderAdapter = new BillGenerateOrderAdapter(orderDetailsArrayList,BillViewActivity.this,db);
-        billViewOrderListView.setAdapter(billGenerateOrderAdapter);
+        BillViewActivityOrderAdapter billViewActivityOrderAdapter = new BillViewActivityOrderAdapter(orderDetailsArrayList,BillViewActivity.this,db);
+        billViewOrderListView.setAdapter(billViewActivityOrderAdapter);
 
 
-        shareBtn.setOnClickListener(new View.OnClickListener() {
+        shareImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                PdfGenerator pdfGenerator = new PdfGenerator(BillViewActivity.this, BillViewActivity.this, billDetails, orderDetailsArrayList);
-                pdfGenerator.shareBill();
+//                PdfGenerator pdfGenerator = new PdfGenerator(BillViewActivity.this, BillViewActivity.this, billDetails, orderDetailsArrayList);
+//                pdfGenerator.shareBill();
 
+                BillGenerator billGenerator = new BillGenerator(BillViewActivity.this, billDetails,BillViewActivity.this, billViewActivity);
+                billGenerator.share();
 
             }
         });
 
-        viewBtn.setOnClickListener(new View.OnClickListener() {
+        backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PdfGenerator pdfGenerator = new PdfGenerator(BillViewActivity.this, BillViewActivity.this, billDetails, orderDetailsArrayList);
-                pdfGenerator.openGeneratedBill();
+                finish();
+            }
+        });
+
+        editImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+//                Intent mainActivityIntent = new Intent(BillViewActivity.this, MainActivity.class);
+////                mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                mainActivityIntent.putExtra("testing", 123);
+//                startActivity(mainActivityIntent);
+
+                SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.APP_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(MainActivity.BILL_NEED_TO_EDIT_FLAG, true);
+                editor.putLong(MainActivity.BILL_ID_TO_EDIT, billDetails.get_id());
+                editor.apply();
 
             }
         });
 
     }
+
+    public static File store(Bitmap bm, String fileName){
+        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+        File dir = new File(dirPath);
+        if(!dir.exists())
+            dir.mkdirs();
+        File file = new File(dirPath, fileName);
+        try {
+            FileOutputStream fOut = new FileOutputStream(file);
+            bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    private void shareImage(File file){
+        Uri uri = Uri.fromFile(file);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        try {
+            startActivity(Intent.createChooser(intent, "Share Screenshot"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "No App Available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+//    public static String convertDateFormat(String dateStr) {
+//
+//        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+//
+//
+//        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+//
+//        try {
+//
+//            Date date = inputFormat.parse(dateStr);
+//            return outputFormat.format(date);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//            return null;  // Return null if parsing fails
+//        }
+//    }
+
+
 }

@@ -1,6 +1,8 @@
 package com.febino.aquafish;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,7 +74,7 @@ public class BillListFragment extends Fragment {
 
         mCurrentDate = Calendar.getInstance();
 
-        decimalFormat = new DecimalFormat("#.0");
+        decimalFormat = new DecimalFormat("0.0");
 
         simpleDateFormat = new SimpleDateFormat(dateTimeFormat);
 
@@ -101,6 +103,7 @@ public class BillListFragment extends Fragment {
             public void onClick(View v) {
                 mCurrentDate.add(Calendar.DATE, -1);
                 String dayString = simpleDateFormat.format(mCurrentDate.getTime());
+                currentDateString = dayString;
                 billListDateSelect.setText(dayString);
                 updateBillDetailsArrayList(dayString);
                 //update the data in the listview
@@ -114,6 +117,7 @@ public class BillListFragment extends Fragment {
                 String dayString = simpleDateFormat.format(mCurrentDate.getTime());
                 billListDateSelect.setText(dayString);
                 updateBillDetailsArrayList(dayString);
+                currentDateString = dayString;
                 //update the data in the listview
             }
         });
@@ -159,16 +163,72 @@ public class BillListFragment extends Fragment {
             }
         });
 
+        billListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                TextView messageText = new TextView(getContext());
+
+                messageText.setText("Do you want to delete Bill?");
+
+                messageText.setPadding(50,30,50,30);
+
+                builder.setView(messageText);
+
+
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        db.deleteBillDetailsByID(billDetailsArrayList.get(position).get_id());
+                        billDetailsArrayList.remove(position);
+                        billListViewAdapater.notifyDataSetChanged();
+                        updateBillTotals();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+
+                    }
+                });
+
+                builder.show();
+
+                return true;
+            }
+        });
+
 
 
         return view;
     }
+
+
 
     public void updateBillDetailsArrayList(String date) {
         billDetailsArrayList = cc.copyBillListFromCursor(db.getBillFromBillTableByDate(date));
         billListViewAdapater = new BillListViewAdapater(getContext(), billDetailsArrayList,db);
         billListView.setAdapter(billListViewAdapater);
 
+        updateBillTotals();
+//        totalBillAmount = 0f;
+//
+//        for (int i = 0; i < billDetailsArrayList.size(); i++) {
+//            totalBillAmount += billDetailsArrayList.get(i).getBillAmount();
+//        }
+//
+//        totalBillAmountText.setText(totalBillAmount != 0 ? decimalFormat.format(totalBillAmount) : "0");
+//        totalBillCountText.setText("" + billDetailsArrayList.size());
+
+//        billListViewAdapater.notifyDataSetChanged();
+    }
+
+    private void updateBillTotals(){
         totalBillAmount = 0f;
 
         for (int i = 0; i < billDetailsArrayList.size(); i++) {
@@ -177,7 +237,5 @@ public class BillListFragment extends Fragment {
 
         totalBillAmountText.setText(totalBillAmount != 0 ? decimalFormat.format(totalBillAmount) : "0");
         totalBillCountText.setText("" + billDetailsArrayList.size());
-
-//        billListViewAdapater.notifyDataSetChanged();
     }
 }

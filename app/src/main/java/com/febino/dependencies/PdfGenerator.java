@@ -61,10 +61,6 @@ public class PdfGenerator {
     private Document billDocument;
     private File targetFolder;
     private Context context;
-    private float totalTareWeight = (float) 0.0;
-    private int totalTareCount = 0;
-    private float totalGrossWeight = (float) 0.0;
-    private int totalGrossCount = 0;
     DataBaseManager dbm;
     private String fileName = "";
     private File folder;
@@ -84,6 +80,8 @@ public class PdfGenerator {
 
     private static final int PERMISSION_ALL = 1;
 
+    float amountFloat, oldBalanceFloat, balanceFloat, totalAmountFloat;
+
     public PdfGenerator(Context context, Activity activity, BillDetails billDetails, ArrayList<OrderDetails> orderDetailsArrayList){
 
         if (!ProjectUtils.hasPermission(context, ProjectUtils.STORAGE_PERMISSIONS)) {
@@ -101,7 +99,7 @@ public class PdfGenerator {
         this.billDetails = billDetails;
         this.orderDetailsArrayList = orderDetailsArrayList;
 
-        decimalFormat = new DecimalFormat("#.0");
+        decimalFormat = new DecimalFormat("0.0");
 
         traderDetails = copyCursor.copyTraderFromCursor(dbm.getTraderInTraderTableByID(billDetails.getTraderID()));
 
@@ -196,19 +194,20 @@ public class PdfGenerator {
 
             BaseFont mediumTamilFont = BaseFont.createFont("assets/fonts/notosanstamil_medium.ttf", BaseFont.IDENTITY_H, true);
 //            BaseFont mediumTamilFont = BaseFont.createFont("assets/fonts/notosanstamil_medium.ttf", "UTF-8", BaseFont.EMBEDDED);
-            Font head1 = FontFactory.getFont(FontFactory.HELVETICA, 24,Font.BOLD);
+//            Font head1 = FontFactory.getFont(FontFactory.HELVETICA, 24,Font.BOLD);
             Font tamilHead = new Font(mediumTamilFont, 18, Font.BOLD);
+            Font tamilHead2 = new Font(mediumTamilFont, 12, Font.BOLD);
 
-            Font head2 = FontFactory.getFont(FontFactory.HELVETICA, 18,Font.BOLD);
-            Font fieldFontHead = new Font(mediumTamilFont, 12, Font.BOLD);
+//            Font head2 = FontFactory.getFont(FontFactory.HELVETICA, 18,Font.BOLD);
+            Font tamilFieldHead = new Font(mediumTamilFont, 12, Font.BOLD);
 //            Font fieldFontHead = FontFactory.getFont(FontFactory.HELVETICA, 12,Font.BOLD);
-            Font fieldFontData = new Font(mediumTamilFont, 12, Font.NORMAL);
+            Font tamilFieldData = new Font(mediumTamilFont, 12, Font.NORMAL);
 //            Font fieldFontData = FontFactory.getFont(FontFactory.HELVETICA, 12,Font.NORMAL);
 
 
-            Paragraph namePara = new Paragraph("S.P.F. டேங்க் மீன்",tamilHead);
-            Paragraph addressPara = new Paragraph("Address Line 1, Address Line 2",head2);
-            Paragraph contactNo = new Paragraph("Ph:9876543210", fieldFontHead);
+            Paragraph namePara = new Paragraph("S.P.F. டேங்க் மீன், ஈரோடு",tamilHead);
+            Paragraph addressPara = new Paragraph("லோகு, கட்லா, ௫பா, பங்காஸ், ஜிலேபி, அனைத்து வகை மீன் வியாபாரம்",tamilHead2);
+            Paragraph contactNo = new Paragraph("Ph: 9952483992", tamilFieldHead);
 //            Paragraph gstNo = new Paragraph("GST No:"+companyDetails.GSTno, fieldFont);
 
 
@@ -224,7 +223,7 @@ public class PdfGenerator {
             addressPara.setSpacingAfter(5f);
 
             contactNo.setAlignment(Element.ALIGN_CENTER);
-            contactNo.setSpacingAfter(5f);
+            contactNo.setSpacingAfter(20f);
 
 //            footerPara.setAlignment(Element.ALIGN_CENTER);
 //            footerPara.setSpacingAfter(20f);
@@ -242,10 +241,10 @@ public class PdfGenerator {
 
             for (int i = 0; i < billDetailsString.length; i++) {
 
-                Phrase head = new Phrase(billDetailsString[i][0], fieldFontHead);
+                Phrase head = new Phrase(billDetailsString[i][0], tamilFieldHead);
                 PdfPCell fieldHead = new PdfPCell(head);
                 PdfPCell fieldSemicolon = new PdfPCell( new Phrase(":"));
-                PdfPCell fieldValue = new PdfPCell(new Phrase(billDetailsString[i][1]));
+                PdfPCell fieldValue = new PdfPCell(new Phrase(billDetailsString[i][1],tamilFieldData));
 
                 fieldHead.setPadding(3f);
                 fieldSemicolon.setPadding(3f);
@@ -270,12 +269,12 @@ public class PdfGenerator {
 
 
 
-            PdfPCell date = new PdfPCell(new Phrase("Order Date",fieldFontHead));
-            PdfPCell breed = new PdfPCell( new Phrase("Breed",fieldFontHead));
-            PdfPCell box = new PdfPCell(new Phrase("Box",fieldFontHead));
-            PdfPCell kg = new PdfPCell(new Phrase("Kg",fieldFontHead));
+            PdfPCell date = new PdfPCell(new Phrase("Order Date",tamilFieldHead));
+            PdfPCell breed = new PdfPCell( new Phrase("Breed",tamilFieldHead));
+            PdfPCell box = new PdfPCell(new Phrase("Box",tamilFieldHead));
+            PdfPCell kg = new PdfPCell(new Phrase("Kg",tamilFieldHead));
 //            PdfPCell rate = new PdfPCell(new Phrase("Rate",fieldFontHead));
-            PdfPCell amount = new PdfPCell(new Phrase("Amount",fieldFontHead));
+            PdfPCell amount = new PdfPCell(new Phrase("Amount",tamilFieldHead));
 
 
             date.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -305,19 +304,23 @@ public class PdfGenerator {
             orderDetailsTable.addCell(amount);
 
 
+
+
+            amountFloat = 0;
             for(int i=0;i<orderDetailsArrayList.size();i++){
 
 
                 OrderDetails orderDetails = orderDetailsArrayList.get(i);
                 ProductDetails productDetails = copyCursor.copyProductFromCursor(dbm.getProductFromProductTableByID(orderDetails.getProductID()));
 
-                date = new PdfPCell(new Phrase(convertDateFormat(orderDetails.getOrderDate()),fieldFontData));
-                breed = new PdfPCell( new Phrase(productDetails.productName,fieldFontData));
-                box = new PdfPCell(new Phrase(""+orderDetails.getTotalBox(),fieldFontData));
-                kg = new PdfPCell(new Phrase(""+orderDetails.getTotalKG(),fieldFontData));
+                date = new PdfPCell(new Phrase(convertDateFormat(orderDetails.getOrderDate()),tamilFieldData));
+                breed = new PdfPCell( new Phrase(productDetails.productName,tamilFieldData));
+                box = new PdfPCell(new Phrase(""+orderDetails.getTotalBox(),tamilFieldData));
+                kg = new PdfPCell(new Phrase(""+orderDetails.getTotalKG(),tamilFieldData));
 //                rate = new PdfPCell(new Phrase("100.0",fieldFontData));
                 float calAmount = ((orderDetails.getKgPerBox() * orderDetails.getTotalBox()) + orderDetails.getTotalKG()) * orderDetails.getRatePerKG();
-                amount = new PdfPCell(new Phrase(decimalFormat.format(calAmount),fieldFontData));
+                amount = new PdfPCell(new Phrase(decimalFormat.format(calAmount),tamilFieldData));
+                amountFloat += calAmount;
 
 
                 date.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -329,14 +332,15 @@ public class PdfGenerator {
                 box.setPadding(3f);
                 box.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-                kg.setPadding(3f);
-                kg.setHorizontalAlignment(Element.ALIGN_CENTER);
+                kg.setPaddingRight(10f);
+                kg.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
 //                rate.setPadding(3f);
 //                rate.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-                amount.setPadding(3f);
-                amount.setHorizontalAlignment(Element.ALIGN_CENTER);
+//                amount.setPadding(3f);
+                amount.setPaddingRight(10f);
+                amount.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
 
                 orderDetailsTable.addCell(date);
@@ -350,9 +354,51 @@ public class PdfGenerator {
             orderDetailsTable.setSpacingAfter(20f);
 
 
+            columnWidths = new float[]{20f, 40f, 20f};
             PdfPTable calculationTable = new PdfPTable(3);
             calculationTable.setWidths(columnWidths);
             calculationTable.setWidthPercentage(100);
+
+            balanceFloat = billDetails.getBalanceAmount();
+            oldBalanceFloat = billDetails.getOldBalanceAmount();
+
+            totalAmountFloat = amountFloat + balanceFloat + oldBalanceFloat;
+
+            String totalCalculationString[][] = {
+                    {"Amount ", decimalFormat.format(amountFloat)},
+                    {"Balance ", "" + decimalFormat.format(balanceFloat)},
+                    {"Old Balance", decimalFormat.format(oldBalanceFloat)},
+                    {"Total Amount", decimalFormat.format(totalAmountFloat)}
+            };
+
+            for (int i = 0; i < totalCalculationString.length; i++) {
+
+                Phrase head = new Phrase(totalCalculationString[i][0], tamilFieldHead);
+                PdfPCell fieldHead = new PdfPCell(head);
+                PdfPCell fieldSemicolon = new PdfPCell( new Phrase(":"));
+                PdfPCell fieldValue = new PdfPCell(new Phrase(totalCalculationString[i][1],tamilFieldData));
+
+                fieldHead.setPadding(3f);
+
+                fieldSemicolon.setPadding(3f);
+                fieldSemicolon.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+                fieldValue.setPaddingRight(10f);
+                fieldValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+                fieldHead.setBorder(Rectangle.NO_BORDER);
+                fieldSemicolon.setBorder(Rectangle.NO_BORDER);
+                fieldValue.setBorder(Rectangle.NO_BORDER);
+
+                calculationTable.addCell(fieldHead);
+                calculationTable.addCell(fieldSemicolon);
+                calculationTable.addCell(fieldValue);
+
+            }
+
+            calculationTable.setSpacingAfter(20f);
+
+
 
 
 
@@ -375,36 +421,6 @@ public class PdfGenerator {
 
         return true;
 
-    }
-
-    private String getTimeBetweenString(String start, String end) {
-        Date startDate = new Date();
-        Date endDate = new Date();
-//        Log.i("Start date", start);
-//        Log.i("End date", end);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                if(isTimeFormat24hr)
-//                    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                else
-//                    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-
-
-        try {
-            startDate = simpleDateFormat.parse(start);
-            endDate = simpleDateFormat.parse(end);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        long totalTimeTaken = endDate.getTime() - startDate.getTime();
-        long secs = totalTimeTaken/1000;
-        long mins = secs/60;
-        long hrs = mins/60;
-
-        if (totalTimeTaken < (60*60*1000))
-            return (mins%60)+"Min "+(secs%60)+"Sec";
-        else
-            return (hrs%24) +"Hr "+(mins%60)+"Min";
     }
 
 

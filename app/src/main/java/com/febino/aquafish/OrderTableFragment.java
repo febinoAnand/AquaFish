@@ -1,6 +1,8 @@
 package com.febino.aquafish;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import com.febino.DatabaseManager.CopyCursor;
 import com.febino.DatabaseManager.DataBaseManager;
 import com.febino.aquafish.R;
+import com.febino.dataclass.BillDetails;
 import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.ProductDetails;
 import com.febino.dataclass.TraderDetails;
@@ -198,7 +202,7 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
                 TraderDetails currentTrader = traderDetailsArrayList.get(i);
                 OrderDetails orderDetails = orderDetailsArrayListArray.get(i).get(j);
 
-                if(orderDetails.getTotalKG() == 0 && orderDetails.getTotalBox() == 0)
+                if(orderDetails.getTotalKG() == 0 && orderDetails.getTotalBox() == 0 && orderDetails.getRatePerKG() == 0)
                     addColumnToTableAtD(i, "",true,currentTrader._id,currentProduct._id,null);
                 else
                     addColumnToTableAtD(i, orderDetails.getTotalBox() + " Box \n"+ orderDetails.getTotalKG() +" Kgs",true,currentTrader._id,currentProduct._id,orderDetails);             //todo:give box and kg here
@@ -223,14 +227,20 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
 
         initializeRowForTableF();
 
-        for(int i=0; i<totalOrderByProductArray.size(); i++){
-            OrderDetails totalOrders = totalOrderByProductArray.get(i);
-            String totalBoxAndKg = totalOrders.getTotalBox() +" Box \n"+ totalOrders.getTotalKG() + " Kg" ;
+        for (int i = 0; i < productDetailsArrayList.size(); i++) {
+            String totalBoxAndKg ="" ;
+            ProductDetails productDetails = productDetailsArrayList.get(i);
+            for(int j=0; j<totalOrderByProductArray.size(); j++){
+                OrderDetails totalOrders = totalOrderByProductArray.get(j);
+                if (productDetails._id == totalOrders.getProductID()) {
+                    totalBoxAndKg = totalOrders.getTotalBox() +" Box \n"+ totalOrders.getTotalKG() + " Kg" ;
+                }
+            }
             addColumnsToTableF(totalBoxAndKg, i);
+
         }
         if(totalOrderByProductArray.size() < 5){
             for(int i = totalOrderByProductArray.size(); i < 5; i++){
-
                 addColumnsToTableF("",i);
             }
         }
@@ -532,12 +542,15 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
 
 //                OrderDetails orderDetails = dataBaseManager
 
+
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.dialog_order_details, null);
 
                 OrderDetails orderDetails = new OrderDetails();
 
+
+                TextView alertMessage = v.findViewById(R.id.dialog_order_message_txt);
 
                 EditText dialogOrderName = v.findViewById(R.id.order_name_edit);
                 EditText dialogOrderProduct = v.findViewById(R.id.order_item_edit);
@@ -546,12 +559,17 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
                 EditText dialogOrderKgs = v.findViewById(R.id.order_kgs_edit);
                 EditText dialogOrderRate = v.findViewById(R.id.order_rate_edit);
 
+                ImageButton dialogOrderDeleteBtn = v.findViewById(R.id.dialog_add_order_delete_img_btn);
+
                 Button okBtn = v.findViewById(R.id.order_dialog_ok_btn);
                 Button cancelBtn = v.findViewById(R.id.order_dialog_cancel_btn);
 
 
                 TraderDetails traderDetailsfinal = new CopyCursor().copyTraderFromCursor(dataBaseManager.getTraderInTraderTableByID(traderID));
                 ProductDetails productDetailsfinal = new CopyCursor().copyProductFromCursor(dataBaseManager.getProductFromProductTableByID(productID));
+
+                dialogOrderDeleteBtn.setVisibility(View.GONE);
+
 
                 if (traderID != 0 || productID != 0) {
                     dialogOrderName.setText(""+traderDetailsfinal.name);
@@ -562,9 +580,64 @@ public class OrderTableFragment extends Fragment implements HorizontalScroll.Scr
                     dialogOrderBox.setText("" + currentOrderDetails.getTotalBox());
                     dialogOrderKgs.setText(""+currentOrderDetails.getTotalKG());
                     dialogOrderRate.setText(""+currentOrderDetails.getRatePerKG());
+                    dialogOrderDeleteBtn.setVisibility(View.VISIBLE);
                 }
 
                 dialogOrderDate.setText(selectedDate);
+
+
+                if (currentOrderDetails != null && (currentOrderDetails.isBilled() || currentOrderDetails.getBillID() > 0)) {
+                    BillDetails billDetails = copyCursor.copyBillFromCursor(dataBaseManager.getBillFromBillTableByID(currentOrderDetails.getBillID()));
+                    String alertMessageString = getResources().getString(R.string.order_added_to_bill) +  billDetails.getBillNo() + " on " + billDetails.getBillDate();
+
+                    alertMessage.setText(alertMessageString);
+
+                    dialogOrderBox.setFocusable(false);
+                    dialogOrderKgs.setFocusable(false);
+                    dialogOrderRate.setFocusable(false);
+
+                    alertMessage.setVisibility(View.VISIBLE);
+                    okBtn.setVisibility(View.GONE);
+                    dialogOrderDeleteBtn.setVisibility(View.GONE);
+                }
+
+                dialogOrderDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getContext());
+
+                        deleteDialog.setTitle("Delete Order");
+
+                        TextView messageText = new TextView(getContext());
+
+                        messageText.setText("Are you sure want to delete order?");
+                        messageText.setPadding(50,50,10,20);
+
+                        deleteDialog.setView(messageText);
+
+                        deleteDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dataBaseManager.deleteOrderByID(currentOrderDetails.get_id());
+                                Toast.makeText(getContext(), "Order Deleted", Toast.LENGTH_SHORT).show();
+                                bottomSheetDialog.dismiss();
+                                getFragmentManager().beginTransaction().detach(currentFragment).attach(currentFragment).commit();
+                            }
+                        });
+
+                        deleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+
+                        deleteDialog.show();
+                    }
+                });
+
 
 
 

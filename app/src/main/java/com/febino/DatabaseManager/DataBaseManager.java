@@ -13,6 +13,7 @@ import com.febino.dataclass.BillDetails;
 import com.febino.dataclass.OrderDetails;
 import com.febino.dataclass.ProductDetails;
 import com.febino.dataclass.TraderDetails;
+import com.febino.dependencies.BillGenerator;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -264,6 +265,24 @@ public class DataBaseManager {
 
     public Cursor getOrderFromOrderTableByTraderID(long traderID){
         String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_TRADER_ID +" = '"+traderID+"' AND "+ORDER_IS_BILLED+" = 0 ORDER BY " + ORDER_DATE + " ASC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
+    public Cursor getOrderFromOrderTableByTraderIDWithDate(long traderID,String date){
+        String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_TRADER_ID +" = '"+traderID+"' AND "+ORDER_IS_BILLED+" = 0 AND "+ORDER_DATE+" = '"+date+"' ORDER BY " + ORDER_ROW_ID + " ASC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
+    public Cursor getOrderFromOrderTableByTraderIDWithDate(long traderID,String date, String toDate){
+        String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_TRADER_ID +" = '"+traderID+"' AND "+ORDER_IS_BILLED+" = 0 AND "+ORDER_DATE+" >= '"+date+"' AND "+ORDER_DATE+" <= '"+toDate+"' ORDER BY " + ORDER_DATE + " DESC";
+        Cursor c = db.rawQuery(queryString,null);
+        return c;
+    }
+
+    public Cursor getOrderFromOrderTableByTraderIDWithDate(long traderID,long billID, String date, String toDate){
+        String queryString = "SELECT * FROM "+ ORDER_TABLE + " WHERE "+ ORDER_TRADER_ID +" = '"+traderID+"' AND ("+ORDER_IS_BILLED+" = 0 OR ("+ORDER_IS_BILLED +" = 1 AND " + ORDER_BILL_ID + " = " + billID + ")) AND "+ORDER_DATE+" >= '"+date+"' AND "+ORDER_DATE+" <= '"+toDate+"' ORDER BY " + ORDER_DATE + " DESC";
         Cursor c = db.rawQuery(queryString,null);
         return c;
     }
@@ -533,6 +552,43 @@ public class DataBaseManager {
         }
 
         return lastID;
+    }
+
+    private void changeIsBilledAndBillIDToZero(long billID) {
+        String query = "UPDATE " + ORDER_TABLE + " SET "
+                + ORDER_IS_BILLED + " = " + 0 + ", "
+                + ORDER_BILL_ID + " = " + 0
+                + " WHERE "+ ORDER_BILL_ID +  " = " + billID;
+        db.execSQL(query);
+    }
+
+    public long updateBillInBillTableReturnID(BillDetails billDetails, ArrayList<OrderDetails> orderDetailsArrayList) {
+
+        String query = "UPDATE " + BILL_TABLE + " SET " + BILL_DATE + " = '" + billDetails.getBillDate() + "', "
+                + BILL_BALANCE_AMOUNT + " = '" + billDetails.getBalanceAmount() + "', "
+                + BILL_OLD_BALANCE_AMOUNT + " = '" + billDetails.getOldBalanceAmount() + "', "
+                + BILL_AMOUNT + " = '" + billDetails.getBillAmount() + "' WHERE " + BILL_ROW_ID + " = '" + billDetails.get_id()+"'";
+//
+        Log.i("update query", "working..");
+
+
+        db.execSQL(query);
+
+
+        changeIsBilledAndBillIDToZero(billDetails.get_id());
+
+
+//        long lastID = db.insert(BILL_TABLE, null, billDetailsValue);
+
+        for (int i = 0; i < orderDetailsArrayList.size(); i++) {
+            OrderDetails orderDetails = orderDetailsArrayList.get(i);
+            orderDetails.setBillID(billDetails.get_id());
+            orderDetails.setBilled(true);
+            updateOrderInOrderTable(orderDetails);
+        }
+
+
+        return billDetails.get_id();
     }
 
     public Cursor getBillFromBillTableByDate(String date){
